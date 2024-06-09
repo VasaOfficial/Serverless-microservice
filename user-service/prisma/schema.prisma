@@ -14,10 +14,19 @@ datasource db {
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
-  email     String  @unique
-  password  String
-  salt      String
-  phone     String
-  userType  String
+  user_id            Int       @id @default(autoincrement())
+  phone              String
+  email              String    @unique
+  password           String
+  salt               String
+  userType           String
+  first_name         String?
+  last_name          String?
+  profile_pic        String?
+  verification_code  Int?
+  expiry             DateTime?
+  verified           Boolean   @default(false)
+  created_at         DateTime  @default(now())
+
+  @@index([phone])
 }

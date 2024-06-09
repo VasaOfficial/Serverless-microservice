@@ -6,3 +6,9 @@ stop_db:
 
 server:
 	npm run dev
+
+migrate: 
+	npx prisma migrate dev
+
+migrate-down:
+	npx prisma db execute --file=./sqls/migrate-down.sql --schema=./prisma/schema.prisma

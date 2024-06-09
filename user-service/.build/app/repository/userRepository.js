@@ -17,8 +17,7 @@ const prismaClient_1 = __importDefault(require("../util/prismaClient"));
 class UserRepository {
     constructor() { }
     createAccount(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ email, password, salt, phone, userType }) {
-            // DB Operations using Prisma
+        return __awaiter(this, arguments, void 0, function* ({ phone, email, password, salt, userType }) {
             try {
                 const newUser = yield prismaClient_1.default.user.create({
                     data: {
@@ -42,7 +41,6 @@ class UserRepository {
     }
     findAccount(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            // DB Operations using Prisma
             try {
                 const user = yield prismaClient_1.default.user.findUnique({
                     where: {
@@ -58,6 +56,42 @@ class UserRepository {
             finally {
                 yield prismaClient_1.default.$disconnect();
             }
+        });
+    }
+    updateVerificationCode(userId, code, expiry) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const updatedUser = yield prismaClient_1.default.user.update({
+                    where: {
+                        user_id: userId,
+                    },
+                    data: {
+                        verification_code: code,
+                        expiry: expiry,
+                    },
+                });
+                return updatedUser;
+            }
+            catch (error) {
+                console.error('Error updating verification code:', error);
+                throw error;
+            }
+            finally {
+                yield prismaClient_1.default.$disconnect();
+            }
+        });
+    }
+    updateVerifyUser(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield prismaClient_1.default.user.update({
+                where: {
+                    user_id: parseInt(userId),
+                    verified: false
+                },
+                data: {
+                    verified: true
+                }
+            });
         });
     }
 }
