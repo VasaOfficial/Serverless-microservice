@@ -16,20 +16,20 @@ export const Login = middy((event: APIGatewayProxyEventV2) => {
   return service.LoginUser(event)
 }).use(jsonBodyParser())
 
-export const Verify = async (event: APIGatewayProxyEventV2) => {
+export const Verify =  middy((event: APIGatewayProxyEventV2) => {
   const httpMethod = event.requestContext.http.method.toLowerCase()
 
   if(httpMethod === 'post') {
-    return service.CreateProfile(event)
+    return service.VerifyUser(event)
   } else if(httpMethod === 'get') {
     return service.GetVerificationToken(event)
   } else {
-    return ErrorResponse(404, "requested method is not supported") 
+    return service.ResponseWithError(event)
   }
-}
+}).use(jsonBodyParser())
 
 // User Profile
-export const Profile = async (event: APIGatewayProxyEventV2) => {
+export const Profile = middy((event: APIGatewayProxyEventV2) => {
   const httpMethod = event.requestContext.http.method.toLowerCase()
 
   if(httpMethod === 'post') {
@@ -39,11 +39,11 @@ export const Profile = async (event: APIGatewayProxyEventV2) => {
   } else if(httpMethod === 'get') {
     return service.GetProfile(event)
   } else {
-    return ErrorResponse(404, "requested method is not supported") 
+    return service.ResponseWithError(event)
   }
-}
+}).use(jsonBodyParser())
 
-export const Cart = async (event: APIGatewayProxyEventV2) => {
+export const Cart = middy((event: APIGatewayProxyEventV2) => {
   const httpMethod = event.requestContext.http.method.toLowerCase()
 
   if(httpMethod === 'post') {
@@ -53,11 +53,11 @@ export const Cart = async (event: APIGatewayProxyEventV2) => {
   } else if(httpMethod === 'get') {
     return service.GetCart(event)
   } else {
-    return ErrorResponse(404, "requested method is not supported") 
+    return service.ResponseWithError(event)
   }
-}
+}).use(jsonBodyParser())
 
-export const Payment = async (event: APIGatewayProxyEventV2) => {
+export const Payment = middy((event: APIGatewayProxyEventV2) => {
   const httpMethod = event.requestContext.http.method.toLowerCase()
 
   if(httpMethod === 'post') {
@@ -67,6 +67,6 @@ export const Payment = async (event: APIGatewayProxyEventV2) => {
   } else if(httpMethod === 'get') {
     return service.GetPaymentMethod(event)
   } else {
-    return ErrorResponse(404, "requested method is not supported") 
+    return service.ResponseWithError(event)
   }
-}
+}).use(jsonBodyParser())

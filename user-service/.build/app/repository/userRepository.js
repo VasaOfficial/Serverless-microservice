@@ -83,15 +83,39 @@ class UserRepository {
     }
     updateVerifyUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield prismaClient_1.default.user.update({
-                where: {
-                    user_id: parseInt(userId),
-                    verified: false
-                },
-                data: {
-                    verified: true
+            try {
+                // Check if the user is already verified before attempting to update
+                const user = yield prismaClient_1.default.user.findUnique({
+                    where: {
+                        user_id: parseInt(userId)
+                    }
+                });
+                if (!user) {
+                    throw new Error("User not found");
                 }
-            });
+                // If user is not verified, update the verification status
+                if (!user.verified) {
+                    const updatedUser = yield prismaClient_1.default.user.update({
+                        where: {
+                            user_id: parseInt(userId)
+                        },
+                        data: {
+                            verified: true
+                        }
+                    });
+                    return updatedUser;
+                }
+                else {
+                    throw new Error("User already verified");
+                }
+            }
+            catch (error) {
+                console.error('Error updating verification status:', error);
+                throw error;
+            }
+            finally {
+                yield prismaClient_1.default.$disconnect();
+            }
         });
     }
 }

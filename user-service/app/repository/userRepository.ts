@@ -61,14 +61,38 @@ export class UserRepository {
   }
 
   async updateVerifyUser(userId: string) {
-    return await prisma.user.update({
-      where: { 
-        user_id: parseInt(userId), 
-        verified: false 
-      },
-      data: {
-        verified: true
+    try {
+      // Check if the user is already verified before attempting to update
+      const user = await prisma.user.findUnique({
+        where: {
+          user_id: parseInt(userId)
+        }
+      });
+  
+      if (!user) {
+        throw new Error("User not found");
       }
-    });
+  
+      // If user is not verified, update the verification status
+      if (!user.verified) {
+        const updatedUser = await prisma.user.update({
+          where: {
+            user_id: parseInt(userId)
+          },
+          data: {
+            verified: true
+          }
+        });
+        return updatedUser;
+      } else {
+        throw new Error("User already verified");
+      }
+    } catch (error) {
+      console.error('Error updating verification status:', error);
+      throw error;
+    } finally {
+      await prisma.$disconnect();
+    }
   }
+  
 }
