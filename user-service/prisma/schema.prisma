@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  user_id            Int       @id @default(autoincrement())
+  user_id            Int      @id @default(autoincrement())
   phone              String
   email              String    @unique
   password           String
@@ -27,6 +27,24 @@ model User {
   expiry             DateTime?
   verified           Boolean   @default(false)
   created_at         DateTime  @default(now())
+  address            Address[]
 
   @@index([phone])
+}
+
+model Address {
+  id            Int       @id @default(autoincrement())
+  user_id       Int
+  address_line1 String?
+  address_line2 String?
+  city          String?
+  post_code     Int?
+  country       String?
+  created_at    DateTime  @default(now())
+
+  user          User      @relation(fields: [user_id], references: [user_id])
+
+  @@index([city])
+  @@index([post_code])
+  @@index([country])
 }

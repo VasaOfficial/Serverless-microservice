@@ -30,6 +30,7 @@ const LoginInput_1 = require("../models/dto/LoginInput");
 const notification_1 = require("../util/notification");
 const VerificationInput_1 = require("../models/dto/VerificationInput");
 const dateHelper_1 = require("../util/dateHelper");
+const AddressInput_1 = require("../models/dto/AddressInput");
 let UserService = class UserService {
     constructor(repository) {
         this.repository = repository;
@@ -115,7 +116,7 @@ let UserService = class UserService {
                 const currentTime = new Date();
                 const diff = (0, dateHelper_1.TimeDifference)(expiry, currentTime.toISOString(), "m");
                 if (diff > 0) {
-                    yield this.repository.updateVerifyUser(payload.user_id.toString());
+                    yield this.repository.updateVerifyUser(payload.user_id);
                 }
                 else {
                     return (0, response_1.ErrorResponse)(403, "verification code is expired!");
@@ -127,12 +128,26 @@ let UserService = class UserService {
     // User Profile
     CreateProfile(event) {
         return __awaiter(this, void 0, void 0, function* () {
+            const token = event.headers.authorization;
+            const payload = yield (0, password_1.VerifyToken)(token);
+            if (payload === false)
+                return (0, response_1.ErrorResponse)(403, "authorization failed!");
+            const input = (0, class_transformer_1.plainToClass)(AddressInput_1.ProfileInput, event.body);
+            const error = yield (0, errors_1.AppValidationError)(input);
+            if (error)
+                return (0, response_1.ErrorResponse)(404, error);
+            const result = yield this.repository.createProfile(payload.user_id, input);
             return (0, response_1.SuccessResponse)({ message: 'response from Create User Profile' });
         });
     }
     GetProfile(event) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (0, response_1.SuccessResponse)({ message: 'response from Get User Profile' });
+            const token = event.headers.authorization;
+            const payload = yield (0, password_1.VerifyToken)(token);
+            if (payload === false)
+                return (0, response_1.ErrorResponse)(403, "authorization failed!");
+            const result = yield this.repository.getUserProfile(payload.user_id);
+            return (0, response_1.SuccessResponse)(result);
         });
     }
     EditProfile(event) {

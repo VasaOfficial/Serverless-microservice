@@ -10,6 +10,7 @@ import { LoginInput } from "../models/dto/LoginInput";
 import { GenerateAccessCode, SendVerificationCode  } from "../util/notification";
 import { VerificationInput} from '../models/dto/VerificationInput'
 import { TimeDifference } from '../util/dateHelper'
+import { ProfileInput } from "../models/dto/AddressInput";
 
 @autoInjectable()
 export class UserService {
@@ -103,7 +104,7 @@ export class UserService {
       const diff = TimeDifference(expiry, currentTime.toISOString(), "m");
 
       if (diff > 0) {
-        await this.repository.updateVerifyUser(payload.user_id.toString());
+        await this.repository.updateVerifyUser(payload.user_id)
       } else {
         return ErrorResponse(403, "verification code is expired!");
       }
@@ -113,11 +114,27 @@ export class UserService {
 
   // User Profile
   async CreateProfile(event: APIGatewayProxyEventV2) {
+    const token = event.headers.authorization;
+    const payload = await VerifyToken(token);
+
+    if(payload === false) return ErrorResponse(403, "authorization failed!");
+
+    const input = plainToClass(ProfileInput, event.body);
+    const error = await AppValidationError(input);
+    if (error) return ErrorResponse(404, error);
+
+    const result = await this.repository.createProfile(payload.user_id, input)
     return SuccessResponse({ message: 'response from Create User Profile'});
   }
 
   async GetProfile(event: APIGatewayProxyEventV2) {
-    return SuccessResponse({ message: 'response from Get User Profile'});
+    const token = event.headers.authorization;
+    const payload = await VerifyToken(token);
+
+    if(payload === false) return ErrorResponse(403, "authorization failed!");
+
+    const result = await this.repository.getUserProfile(payload.user_id)
+    return SuccessResponse(result);
   }
 
   async EditProfile(event: APIGatewayProxyEventV2) {

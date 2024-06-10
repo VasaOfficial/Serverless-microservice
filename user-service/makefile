@@ -10,5 +10,5 @@ server:
 migrate: 
 	npx prisma migrate dev
 
-migrate-down:
-	npx prisma db execute --file=./sqls/migrate-down.sql --schema=./prisma/schema.prisma
+drop-user:
+	npx prisma db execute --file=./sqls/drop-user.sql --schema=./prisma/schema.prisma
