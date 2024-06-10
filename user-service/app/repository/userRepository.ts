@@ -165,6 +165,7 @@ export class UserRepository {
           verified: true,
           address: {
             select: {
+              id: true,
               city: true,
               country: true,
               address_line1: true,
@@ -182,6 +183,41 @@ export class UserRepository {
       return user;
     } catch (error) {
       console.error('Error fetching user profile:', error);
+      throw error;
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
+
+  async editProfile(
+    userId: number,
+    {
+      firstName,
+      lastName,
+      userType,
+      address: { city, country, addressLine1, addressLine2, post_code, id },
+    }: ProfileInput
+  ) {
+    try {
+      await this.updateUser(userId, firstName, lastName, userType);
+      // Update the address associated with the user
+      const updatedAddress = await prisma.address.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          id: id,
+          city: city,
+          country: country,
+          address_line1: addressLine1,
+          address_line2: addressLine2,
+          post_code: post_code,
+        },
+      });
+
+      return { address: updatedAddress };
+    } catch (error) {
+      console.error('Error creating profile:', error);
       throw error;
     } finally {
       await prisma.$disconnect();

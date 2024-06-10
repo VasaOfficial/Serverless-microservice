@@ -43,7 +43,6 @@ export class UserService {
 
       return SuccessResponse(data);
     } catch (error) {
-      console.log(error)
       return ErrorResponse(500, error)
     }  
   }
@@ -66,79 +65,109 @@ export class UserService {
 
       return SuccessResponse({ token });
     } catch (error) {
-      console.log(error)
       return ErrorResponse(500, error)
     }  
   }
 
   async GetVerificationToken(event: APIGatewayProxyEventV2) {
-    const token = event.headers.authorization;
-    const payload = await VerifyToken(token);
-
-    if (!payload) return ErrorResponse(403, "authorization failed!");
-
-    const { code, expiry } = GenerateAccessCode();
-    await this.repository.updateVerificationCode(payload.user_id, code, expiry);
-
-    return SuccessResponse({
-      message: "verification code is sent to your registered mobile number!",
-    });
+    try {
+      const token = event.headers.authorization;
+      const payload = await VerifyToken(token);
+  
+      if (!payload) return ErrorResponse(403, "authorization failed!");
+  
+      const { code, expiry } = GenerateAccessCode();
+      await this.repository.updateVerificationCode(payload.user_id, code, expiry);
+  
+      return SuccessResponse({
+        message: "verification code is sent to your registered mobile number!",
+      });
+    } catch (error) {
+      return ErrorResponse(500, error)
+    }
   }
 
   async VerifyUser(event: APIGatewayProxyEventV2) {
-    const token = event.headers.authorization;
-    const payload = await VerifyToken(token);
-    if (!payload) return ErrorResponse(403, "authorization failed!");
-
-    const input = plainToClass(VerificationInput, event.body);
-    const error = await AppValidationError(input);
-    if (error) return ErrorResponse(404, error);
-
-    const { verification_code, expiry } = await this.repository.findAccount(
-      payload.email
-    );
-    // find the user account
-    if (verification_code === parseInt(input.code)) {
-      // check expiry
-      const currentTime = new Date();
-      const diff = TimeDifference(expiry, currentTime.toISOString(), "m");
-
-      if (diff > 0) {
-        await this.repository.updateVerifyUser(payload.user_id)
-      } else {
-        return ErrorResponse(403, "verification code is expired!");
+    try {
+      const token = event.headers.authorization;
+      const payload = await VerifyToken(token);
+      if (!payload) return ErrorResponse(403, "authorization failed!");
+  
+      const input = plainToClass(VerificationInput, event.body);
+      const error = await AppValidationError(input);
+      if (error) return ErrorResponse(404, error);
+  
+      const { verification_code, expiry } = await this.repository.findAccount(
+        payload.email
+      );
+      // find the user account
+      if (verification_code === parseInt(input.code)) {
+        // check expiry
+        const currentTime = new Date();
+        const diff = TimeDifference(expiry, currentTime.toISOString(), "m");
+  
+        if (diff > 0) {
+          await this.repository.updateVerifyUser(payload.user_id)
+        } else {
+          return ErrorResponse(403, "verification code is expired!");
+        }
       }
+      return SuccessResponse({ message: "user verified!" });
+    } catch (error) {
+      return ErrorResponse(500, error)
     }
-    return SuccessResponse({ message: "user verified!" });
   }
 
   // User Profile
   async CreateProfile(event: APIGatewayProxyEventV2) {
-    const token = event.headers.authorization;
-    const payload = await VerifyToken(token);
-
-    if(payload === false) return ErrorResponse(403, "authorization failed!");
-
-    const input = plainToClass(ProfileInput, event.body);
-    const error = await AppValidationError(input);
-    if (error) return ErrorResponse(404, error);
-
-    const result = await this.repository.createProfile(payload.user_id, input)
-    return SuccessResponse({ message: 'response from Create User Profile'});
+    try {
+      const token = event.headers.authorization;
+      const payload = await VerifyToken(token);
+  
+      if(payload === false) return ErrorResponse(403, "authorization failed!");
+  
+      const input = plainToClass(ProfileInput, event.body);
+      const error = await AppValidationError(input);
+      if (error) return ErrorResponse(404, error);
+  
+      await this.repository.createProfile(payload.user_id, input)
+      return SuccessResponse({ message: 'profile created successfully!'});
+    } catch (error) {
+      return ErrorResponse(500, error)
+    }
   }
 
   async GetProfile(event: APIGatewayProxyEventV2) {
-    const token = event.headers.authorization;
-    const payload = await VerifyToken(token);
+    try {
+      const token = event.headers.authorization;
+      const payload = await VerifyToken(token);
+  
+      if(payload === false) return ErrorResponse(403, "authorization failed!");
+  
+      const result = await this.repository.getUserProfile(payload.user_id)
+      return SuccessResponse(result);
 
-    if(payload === false) return ErrorResponse(403, "authorization failed!");
-
-    const result = await this.repository.getUserProfile(payload.user_id)
-    return SuccessResponse(result);
+    } catch (error) {
+      return ErrorResponse(500, error)
+    }
   }
 
   async EditProfile(event: APIGatewayProxyEventV2) {
-    return SuccessResponse({ message: 'response from Edit User Profile'});
+    try {
+      const token = event.headers.authorization;
+      const payload = await VerifyToken(token);
+  
+      if(payload === false) return ErrorResponse(403, "authorization failed!");
+  
+      const input = plainToClass(ProfileInput, event.body);
+      const error = await AppValidationError(input);
+      if (error) return ErrorResponse(404, error);
+  
+      await this.repository.editProfile(payload.user_id, input)
+      return SuccessResponse({ message: 'profile updated successfully!'});
+    } catch (error) {
+      return ErrorResponse(500, error)
+    }
   }
   
   // Cart Section
