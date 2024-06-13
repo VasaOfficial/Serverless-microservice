@@ -1,5 +1,9 @@
+import { APIGatewayEvent } from "aws-lambda";
 import { ProductRepository } from "../repository/product-repository";
-import { SuccessResponse } from "../util/response";
+import { ErrorResponse, SuccessResponse } from "../util/response";
+import { plainToClass } from "class-transformer";
+import { AppValidationError } from "../util/errors";
+import { ProductInput } from "../dto/product-input";
 
 export class ProductService {
   _repository: ProductRepository
@@ -7,23 +11,50 @@ export class ProductService {
     this._repository = repository
   }
 
-  async createProduct() {
-    return SuccessResponse({ message: 'Product created successfully!'});
+  async createProduct(event: APIGatewayEvent) {
+    const input = plainToClass(ProductInput, JSON.parse(event.body!))
+  
+    const error = await AppValidationError(input)
+    if(error) return ErrorResponse(404, error)
+
+    const data = await this._repository.createProduct(input)
+    return SuccessResponse(data);
   }
 
-  async getProducts() {
-    return SuccessResponse({ message: 'get products successful!'});
+  async getProducts(event: APIGatewayEvent) {
+    const data = await this._repository.getAllProducts()
+    return SuccessResponse(data);
   }
 
-  async getProduct() {
-    return SuccessResponse({ message: 'get product by id successful!'});
+  async getProduct(event: APIGatewayEvent) {
+    const productId = event.pathParameters?.id
+    if(!productId) return ErrorResponse(404, 'product id not found!')
+
+    const data = await this._repository.getProductById(productId)
+    
+    if (data === null) return ErrorResponse(404, 'Product not found');
+    return SuccessResponse(data);
   }
 
-  async editProduct() {
-    return SuccessResponse({ message: 'edit product successful!'});
+  async editProduct(event: APIGatewayEvent) {
+    const productId = event.pathParameters?.id;
+    if (!productId) return ErrorResponse(403, "please provide product id");
+
+    const input = plainToClass(ProductInput, JSON.parse(event.body!));
+    const error = await AppValidationError(input);
+    if (error) return ErrorResponse(404, error);
+
+    input.id = productId;
+    const data = await this._repository.updateProduct(input);
+
+    return SuccessResponse(data);
   }
 
-  async deleteProduct() {
-    return SuccessResponse({ message: 'edit product successful!'});
+  async deleteProduct(event: APIGatewayEvent) {
+    const productId = event.pathParameters?.id;
+    if (!productId) return ErrorResponse(403, "please provide product id");
+
+    const data = await this._repository.deleteProduct(productId);
+    return SuccessResponse(data);
   }
 }
