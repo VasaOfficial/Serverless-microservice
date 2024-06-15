@@ -7,22 +7,23 @@ type ProductModel = {
   image_url: string;
   price: number;
   availability: boolean;
-}
+};
 
 export type ProductDoc = mongoose.Document & ProductModel;
 
-const productSchema = new mongoose.Schema({
-  name: String,
-  description: String,
-  category_id: String,
-  image_url: String,
-  price: Number,
-  availability: Boolean,
-},
+const productSchema = new mongoose.Schema(
+  {
+    name: String,
+    description: String,
+    category_id: String,
+    image_url: String,
+    price: Number,
+    availability: Boolean,
+  },
   {
     toJSON: {
-      transform(doc, ret) {
-        delete ret.__v
+      transform(doc, ret, options) {
+        delete ret.__v;
         delete ret.createdAt;
         delete ret.updatedAt;
       },
@@ -31,5 +32,8 @@ const productSchema = new mongoose.Schema({
   }
 );
 
-const products = mongoose.model<ProductDoc>("Product", productSchema);
+const products =
+  mongoose.models.products ||
+  mongoose.model<ProductDoc>("products", productSchema);
+
 export { products };
