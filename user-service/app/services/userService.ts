@@ -7,7 +7,7 @@ import { SignupInput } from "../models/dto/SignInput";
 import { AppValidationError } from "../util/errors";
 import { GetHashedPassword, GetSalt, GetToken, ValidatePassword, VerifyToken } from "../util/password";
 import { LoginInput } from "../models/dto/LoginInput";
-import { GenerateAccessCode, SendVerificationCode  } from "../util/notification";
+import { GenerateAccessCode, SendVerificationCode } from "../util/notification";
 import { VerificationInput} from '../models/dto/VerificationInput'
 import { TimeDifference } from '../util/dateHelper'
 import { ProfileInput } from "../models/dto/AddressInput";
