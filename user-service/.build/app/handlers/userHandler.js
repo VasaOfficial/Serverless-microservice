@@ -8,7 +8,9 @@ const tsyringe_1 = require("tsyringe");
 const userService_1 = require("../services/userService");
 const core_1 = __importDefault(require("@middy/core"));
 const http_json_body_parser_1 = __importDefault(require("@middy/http-json-body-parser"));
+const cartService_1 = require("../services/cartService");
 const service = tsyringe_1.container.resolve(userService_1.UserService);
+const cartService = tsyringe_1.container.resolve(cartService_1.CartService);
 // User Creation, Login and Verification
 exports.Signup = (0, core_1.default)((event) => {
     return service.CreateUser(event);
@@ -47,13 +49,16 @@ exports.Profile = (0, core_1.default)((event) => {
 exports.Cart = (0, core_1.default)((event) => {
     const httpMethod = event.requestContext.http.method.toLowerCase();
     if (httpMethod === 'post') {
-        return service.CreateCart(event);
+        return cartService.CreateCart(event);
     }
     else if (httpMethod === 'put') {
-        return service.UpdateCart(event);
+        return cartService.UpdateCart(event);
     }
     else if (httpMethod === 'get') {
-        return service.GetCart(event);
+        return cartService.GetCart(event);
+    }
+    else if (httpMethod === 'delete') {
+        return cartService.DeleteCart(event);
     }
     else {
         return service.ResponseWithError(event);

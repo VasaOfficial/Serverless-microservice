@@ -28,6 +28,7 @@ model User {
   verified           Boolean   @default(false)
   created_at         DateTime  @default(now())
   address            Address[]
+  shoppingCarts      ShoppingCart[]
 
   @@index([phone])
 }
@@ -47,4 +48,30 @@ model Address {
   @@index([city])
   @@index([post_code])
   @@index([country])
+}
+
+model ShoppingCart {
+  cart_id    Int       @id @default(autoincrement())
+  user_id    Int
+  created_at DateTime  @default(now())
+
+  user       User      @relation(fields: [user_id], references: [user_id])
+  cartItems  CartItem[]
+
+  @@index([user_id])
+}
+
+model CartItem {
+  item_id    Int       @id @default(autoincrement())
+  cart_id    Int
+  product_id String
+  name       String
+  price      Int
+  image_url  String
+  item_qty   Int
+  created_at DateTime  @default(now())
+
+  shoppingCart ShoppingCart @relation(fields: [cart_id], references: [cart_id])
+
+  @@index([product_id])
 }

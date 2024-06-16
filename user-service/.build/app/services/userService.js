@@ -187,22 +187,6 @@ let UserService = class UserService {
             }
         });
     }
-    // Cart Section
-    CreateCart(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return (0, response_1.SuccessResponse)({ message: 'response from Create Cart' });
-        });
-    }
-    GetCart(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return (0, response_1.SuccessResponse)({ message: 'response from Get Cart' });
-        });
-    }
-    UpdateCart(event) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return (0, response_1.SuccessResponse)({ message: 'response from Update Cart' });
-        });
-    }
     // Payment Section
     CreatePaymentMethod(event) {
         return __awaiter(this, void 0, void 0, function* () {

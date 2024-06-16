@@ -14,9 +14,6 @@ export class CategoryRepository {
       imageUrl
     });
 
-    // parent id exist 
-
-    // update parent category with new sub category id
     if(parentId) {
       const parentCategory = (await categories.findById(parentId)) as CategoryDoc;
       parentCategory.subCategories = [...parentCategory.subCategories, newCategory];

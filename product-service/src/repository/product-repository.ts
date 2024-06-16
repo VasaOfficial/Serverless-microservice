@@ -27,7 +27,7 @@ export class ProductRepository {
   }
 
   async getProductById(id: string) {
-    return products.findById(id)
+    return await products.findById(id) as ProductDoc
   }
 
   async updateProduct({
