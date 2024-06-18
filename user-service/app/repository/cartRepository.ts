@@ -72,9 +72,10 @@ export class CartRepository {
     });
   }
 
-  async deleteCartItem(id: number): Promise<void> {
-    await prisma.cartItem.delete({
+  async deleteCartItem(id: number) {
+    const deletedItem = await prisma.cartItem.delete({
       where: { item_id: id },
     });
+    return deletedItem;
   }
 }

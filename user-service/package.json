@@ -23,6 +23,7 @@
     "@prisma/client": "^5.15.0",
     "@types/aws-lambda": "^8.10.138",
     "aws-lambda": "^1.0.7",
+    "aws-sdk": "^2.1643.0",
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",

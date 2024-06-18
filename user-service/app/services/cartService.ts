@@ -5,9 +5,10 @@ import { plainToClass } from 'class-transformer'
 import { AppValidationError } from "../util/errors";
 import { VerifyToken } from "../util/password";
 import { CartRepository } from "../repository/cartRepository";
-import { CartInput } from "../models/dto/CartInput";
+import { CartInput, UpdateCartInput } from "../models/dto/CartInput";
 import { CartItemModel } from "../models/CartItemsModel";
 import { PullData } from "../message-queue";
+import aws from "aws-sdk";
 
 @autoInjectable()
 export class CartService {
@@ -80,14 +81,81 @@ export class CartService {
   }
 
   async GetCart(event: APIGatewayProxyEventV2) {
+    try {
+      const token = event.headers.authorization;
+      const payload = await VerifyToken(token);
+      if (!payload) return ErrorResponse(403, "authorization failed!");
+
+      const result = await this.repository.findCartItems(payload.user_id)
+        
+    } catch (error) {
+      console.log(error);
+      return ErrorResponse(500, error);
+    }
     return SuccessResponse({ message: 'response from Get Cart'});
   }
 
   async UpdateCart(event: APIGatewayProxyEventV2) {
-    return SuccessResponse({ message: 'response from Update Cart'});
+    try {
+      const token = event.headers.authorization;
+      const payload = await VerifyToken(token);
+      const cartItemId = Number(event.pathParameters.id);
+      if (!payload) return ErrorResponse(403, "authorization failed!");
+
+      const input = plainToClass(UpdateCartInput, event.body);
+      const error = await AppValidationError(input);
+      if (error) return ErrorResponse(404, error);
+
+      const cartItems = await this.repository.updateCartItemById(cartItemId, input.qty)
+
+      return SuccessResponse(cartItems);
+    } catch (error) {
+      console.log(error);
+      return ErrorResponse(500, error);
+    }
   }
 
+  // delete cart item
   async DeleteCart(event: APIGatewayProxyEventV2) {
-    return SuccessResponse({ message: 'response from Update Cart'});
+    try {
+      const token = event.headers.authorization;
+      const payload = await VerifyToken(token);
+      const cartItemId = Number(event.pathParameters.id);
+      if (!payload) return ErrorResponse(403, "authorization failed!");
+
+      const deletedItem = await this.repository.deleteCartItem(cartItemId)
+      return SuccessResponse(deletedItem);
+    } catch (error) {
+      console.log(error);
+      return ErrorResponse(500, error);
+    }
+  }
+
+  async CollectPayment(event: APIGatewayProxyEventV2) {
+    try {
+      const token = event.headers.authorization;
+      const payload = await VerifyToken(token);
+
+      if (!payload) return ErrorResponse(403, "authorization failed!");
+      const cartItems = await this.repository.findCartItems(payload.user_id)
+
+      const params = {
+        Message: JSON.stringify(cartItems),
+        TopicArn: process.env.SNS_TOPIC,
+        MessageAttributes: {
+          actionType: {
+            DataType: "String",
+            StringValue: "place_order",
+          }
+        }
+      }
+      const sns = new aws.SNS()
+      const response = await sns.publish(params).promise()
+
+      return SuccessResponse({ msg: 'Payment processing', response});
+    } catch (error) {
+      console.log(error);
+      return ErrorResponse(500, error);
+    }
   }
 }
