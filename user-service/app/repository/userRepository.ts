@@ -163,6 +163,8 @@ export class UserRepository {
           phone: true,
           userType: true,
           verified: true,
+          stripe_id: true,
+          payment_id: true,
           address: {
             select: {
               id: true,
@@ -221,6 +223,29 @@ export class UserRepository {
       throw error;
     } finally {
       await prisma.$disconnect();
+    }
+  }
+
+  async updateUserPayment({
+    userId,
+    paymentId,
+    customerId,
+  }: {
+    userId: number;
+    paymentId: string;
+    customerId: string;
+  }) {
+    try {
+      const user = await prisma.user.update({
+        where: { user_id: userId },
+        data: {
+          stripe_id: customerId,
+          payment_id: paymentId,
+        },
+      });
+      return user;
+    } catch (error) {
+      throw new Error('Error while updating user payment: ' + error.message);
     }
   }
 }

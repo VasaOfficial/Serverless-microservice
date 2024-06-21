@@ -13,4 +13,6 @@ export interface UserModel {
   verification_code?: number;
   expiry?: Date;
   address?: AddressModel[]
+  stripe_id?: string
+  payment_id?: string
 }

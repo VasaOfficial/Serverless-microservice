@@ -29,6 +29,8 @@ model User {
   created_at         DateTime  @default(now())
   address            Address[]
   shoppingCarts      ShoppingCart[]
+  stripe_id          String?
+  payment_id         String?
 
   @@index([phone])
 }

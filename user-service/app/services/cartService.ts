@@ -9,6 +9,8 @@ import { CartInput, UpdateCartInput } from "../models/dto/CartInput";
 import { CartItemModel } from "../models/CartItemsModel";
 import { PullData } from "../message-queue";
 import aws from "aws-sdk";
+import { UserRepository } from "../repository/userRepository";
+import { APPLICATION_FEE, CreatePaymentSession, RetrievePayment, STRIPE_FEE } from "../util/payment";
 
 @autoInjectable()
 export class CartService {
@@ -85,9 +87,15 @@ export class CartService {
       const token = event.headers.authorization;
       const payload = await VerifyToken(token);
       if (!payload) return ErrorResponse(403, "authorization failed!");
+      const cartItems = await this.repository.findCartItems(payload.user_id)
 
-      const result = await this.repository.findCartItems(payload.user_id)
-        
+      const totalAmount = cartItems.reduce(
+        (sum, item) => sum + item.price * item.item_qty,
+        0
+      );
+      const appFee = APPLICATION_FEE(totalAmount) + STRIPE_FEE(totalAmount);
+
+      return SuccessResponse({ cartItems, totalAmount, appFee });
     } catch (error) {
       console.log(error);
       return ErrorResponse(500, error);
@@ -135,27 +143,84 @@ export class CartService {
     try {
       const token = event.headers.authorization;
       const payload = await VerifyToken(token);
-
       if (!payload) return ErrorResponse(403, "authorization failed!");
-      const cartItems = await this.repository.findCartItems(payload.user_id)
 
+      const { stripe_id, email, phone } = await new UserRepository().getUserProfile(payload.user_id);
+      const cartItems = await this.repository.findCartItems(payload.user_id);
+
+      const total = cartItems.reduce(
+        (sum, item) => sum + item.price * item.item_qty,
+        0
+      );
+
+      const appFee = APPLICATION_FEE(total);
+      const stripeFee = STRIPE_FEE(total);
+      const amount = total + appFee + stripeFee;
+
+      // initialize Payment gateway
+      const { secret, publishableKey, customerId, paymentId } =
+        await CreatePaymentSession({
+          amount,
+          email,
+          phone,
+          customerId: stripe_id,
+        });
+
+      await new UserRepository().updateUserPayment({
+        userId: payload.user_id,
+        customerId,
+        paymentId,
+      });
+
+      return SuccessResponse({ secret, publishableKey });
+    } catch (error) {
+      console.log(error);
+      return ErrorResponse(500, error);
+    }
+  }
+
+  async PlaceOrder(event: APIGatewayProxyEventV2) {
+    // get cart items
+    const token = event.headers.authorization;
+    const payload = await VerifyToken(token);
+    if (!payload) return ErrorResponse(403, "authorization failed!");
+
+    const { payment_id } = await new UserRepository().getUserProfile(
+      payload.user_id
+    );
+
+    console.log(payment_id);
+
+    const paymentInfo = await RetrievePayment(payment_id);
+    console.log(paymentInfo);
+
+    if (paymentInfo.status === "succeeded") {
+      const cartItems = await this.repository.findCartItems(payload.user_id);
+
+      // // Send SNS topic to create Order [Transaction MS] => email to user
       const params = {
-        Message: JSON.stringify(cartItems),
+        Message: JSON.stringify({
+          userId: payload.user_id,
+          items: cartItems,
+          transaction: paymentInfo,
+        }),
         TopicArn: process.env.SNS_TOPIC,
         MessageAttributes: {
           actionType: {
             DataType: "String",
             StringValue: "place_order",
-          }
-        }
-      }
-      const sns = new aws.SNS()
-      const response = await sns.publish(params).promise()
-
-      return SuccessResponse({ msg: 'Payment processing', response});
-    } catch (error) {
-      console.log(error);
-      return ErrorResponse(500, error);
+          },
+        },
+      };
+      const sns = new aws.SNS();
+      const response = await sns.publish(params).promise();
+      console.log(response);
+      console.log(JSON.stringify(params));
+      // update payment id = ""
+      // delete all cart items
+      return SuccessResponse({ msg: "success", params });
     }
+
+    return ErrorResponse(503, new Error("payment failed!"));
   }
 }
