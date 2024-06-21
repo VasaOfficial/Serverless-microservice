@@ -11,5 +11,5 @@ export const CollectPayment = middy((event: APIGatewayProxyEventV2) => {
 }).use(bodyParser());
 
 export const PlaceOrder = middy((event: APIGatewayProxyEventV2) => {
-  
+  return cartService.PlaceOrder(event);
 }).use(bodyParser())
