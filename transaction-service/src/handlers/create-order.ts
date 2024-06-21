@@ -1,127 +1,72 @@
-// import { SQSEvent } from "aws-lambda";
-// import { plainToClass } from "class-transformer";
-// import { ValidateError } from "../utils/errors";
-// import { RawOrderInput } from "../dto/input";
-// import { DBOperation } from "./db-operation";
+import { SQSEvent } from "aws-lambda";
+import { plainToClass } from "class-transformer";
+import { ValidateError } from "../util/errors";
+import { RawOrderInput } from "../dto/input";
+import prisma from "../util/prismaClient";
 
-// const dbOperation = new DBOperation();
+export const createOrderHandler = async (event: SQSEvent) => {
+  const orderResponse: Record<string, unknown>[] = [];
 
-// export const createOrderHandler = async (event: SQSEvent) => {
-//   const orderResponse: Record<string, unknown>[] = [];
+  const promises = event.Records.map(async (record) => {
+    const input = plainToClass(RawOrderInput, JSON.parse(record.body));
+    const errors = await ValidateError(input);
 
-//   const promisses = event.Records.map(async (record) => {
-//     const input = plainToClass(RawOrderInput, JSON.parse(record.body));
-//     const errors = await ValidateError(input);
+    console.log("ERRORS:", errors);
 
-//     console.log("ERRORS:", JSON.stringify(errors));
+    if (!errors) {
+      try {
+        const transaction = await prisma.transaction.create({
+          data: {
+            amount: input.transaction.amount,
+            amount_received: input.transaction.amount_received,
+            capture_method: input.transaction.capture_method,
+            created: input.transaction.created,
+            currency: input.transaction.currency,
+            customer: input.transaction.customer,
+            payment_id: input.transaction.id,
+            payment_method: input.transaction.payment_method,
+            payment_method_types: input.transaction.payment_method_types.toString(),
+            status: input.transaction.status,
+          },
+        });
 
-//     if (!errors) {
-//       const {
-//         amount,
-//         amount_received,
-//         capture_method,
-//         created,
-//         currency,
-//         customer,
-//         id,
-//         payment_method,
-//         payment_method_types,
-//         status,
-//       } = input.transaction;
+        const order_ref_number = Math.floor(10000 + Math.random() * 900000);
+        const status = "received";
 
-//       // create transaction
-//       const transactionQuery = `INSERT INTO transactions(
-//             amount,
-//             amount_received,
-//             capture_method,
-//             created,
-//             currency,
-//             customer,
-//             payment_id,
-//             payment_method,
-//             payment_method_types,
-//             status
-//              )
-//             VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`;
+        const order = await prisma.order.create({
+          data: {
+            user_id: Number(input.userId),
+            status,
+            amount: input.transaction.amount,
+            transaction_id: transaction.id,
+            order_ref_id: order_ref_number,
+            orderItems: {
+              createMany: {
+                data: input.items.map(item => ({
+                  product_id: item.product_id,
+                  name: item.name,
+                  image_url: item.image_url,
+                  price: item.price,
+                  item_qty: item.item_qty,
+                })),
+              },
+            },
+          },
+          include: {
+            orderItems: true,
+          },
+        });
 
-//       const transactionValues = [
-//         amount,
-//         amount_received,
-//         capture_method,
-//         created,
-//         currency,
-//         customer,
-//         id,
-//         payment_method,
-//         payment_method_types.toString(),
-//         status,
-//       ];
-//       const transactionResult = await dbOperation.executeQuery(
-//         transactionQuery,
-//         transactionValues
-//       );
-//       if (transactionResult.rowCount > 0) {
-//         const transaction_id = transactionResult.rows[0].id;
-//         const order_ref_number = Math.floor(10000 + Math.random() * 900000);
-//         const status = "received";
-//         // create order
-//         const orderQuery = `INSERT INTO orders(
-//               user_id,
-//               status,
-//               amount,
-//               transaction_id,
-//               order_ref_id
-//              )
-//             VALUES($1,$2,$3,$4,$5) RETURNING *`;
+        orderResponse.push({ order });
+      } catch (error) {
+        orderResponse.push({ error });
+      }
+    } else {
+      orderResponse.push({ error: errors });
+    }
+  });
 
-//         const orderValues = [
-//           Number(input.userId),
-//           status,
-//           amount,
-//           transaction_id,
-//           order_ref_number,
-//         ];
-//         const orderResult = await dbOperation.executeQuery(
-//           orderQuery,
-//           orderValues
-//         );
-//         const orderId = orderResult.rows[0].id;
-//         // create order items
-//         if (Array.isArray(input.items)) {
-//           let itemInsertPromise = Array();
-//           input.items.map((item) => {
-//             const orderItemQuery = `INSERT INTO order_items(
-//               order_id,
-//               product_id,
-//               name,
-//               image_url,
-//               price,
-//               item_qty
-//              )
-//             VALUES($1,$2,$3,$4,$5,$6) RETURNING *`;
-
-//             const orderItemValue = [
-//               orderId,
-//               item.product_id,
-//               item.name,
-//               item.image_url,
-//               Number(item.price),
-//               item.item_qty,
-//             ];
-
-//             itemInsertPromise.push(
-//               dbOperation.executeQuery(orderItemQuery, orderItemValue)
-//             );
-//           });
-
-//           await Promise.all(itemInsertPromise);
-//         }
-//       }
-//     } else {
-//       orderResponse.push({ error: JSON.stringify(errors) });
-//     }
-//   });
-//   await Promise.all(promisses);
-//   console.log("RESPONSE:", orderResponse);
-//   return { orderResponse };
-// };
+  await Promise.all(promises);
+  console.log("RESPONSE:", orderResponse);
+  return { orderResponse };
+};
