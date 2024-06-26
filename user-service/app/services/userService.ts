@@ -26,25 +26,35 @@ export class UserService {
   // User Creation, Login and Verification
   async CreateUser(event: APIGatewayProxyEventV2) {
     try {
-      const input = plainToClass(SignupInput, event.body)
-  
-      const error = await AppValidationError(input)
-      if(error) return ErrorResponse(404, error)
-  
-      const salt = await GetSalt()
-      const hashedPassword = await GetHashedPassword(input.password, salt)
-      const data = await this.repository.createAccount({ 
+      const input = plainToClass(SignupInput, event.body);
+      const error = await AppValidationError(input);
+      if (error) return ErrorResponse(404, error);
+
+      const salt = await GetSalt();
+      const hashedPassword = await GetHashedPassword(input.password, salt);
+      const data = await this.repository.createAccount({
         email: input.email,
         password: hashedPassword,
-        salt: salt,
         phone: input.phone,
-        userType: 'BUYER'
-      })
+        userType: "BUYER",
+        salt: salt,
+      });
 
-      return SuccessResponse(data);
+      const token = GetToken(data);
+
+      return SuccessResponse({
+        token,
+        email: data.email,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        phone: data.phone,
+        userType: data.userType,
+        _id: data.user_id,
+      });
     } catch (error) {
-      return ErrorResponse(500, error)
-    }  
+      console.log(error);
+      return ErrorResponse(500, error);
+    }
   }
 
   async LoginUser(event: APIGatewayProxyEventV2) {
@@ -53,32 +63,32 @@ export class UserService {
       const error = await AppValidationError(input)
 
       if(error) return ErrorResponse(404, error)
-  
+
       const data = await this.repository.findAccount(input.email)
       const verified = await ValidatePassword(input.password, data.password, data.salt)
 
       if(!verified) {
         throw new Error('Password does not match')
       }
-      
+
       const token = GetToken(data)
 
       return SuccessResponse({ token });
     } catch (error) {
       return ErrorResponse(500, error)
-    }  
+    }
   }
 
   async GetVerificationToken(event: APIGatewayProxyEventV2) {
     try {
       const token = event.headers.authorization;
       const payload = await VerifyToken(token);
-  
+
       if (!payload) return ErrorResponse(403, "authorization failed!");
-  
+
       const { code, expiry } = GenerateAccessCode();
       await this.repository.updateVerificationCode(payload.user_id, code, expiry);
-  
+
       return SuccessResponse({
         message: "verification code is sent to your registered mobile number!",
       });
@@ -92,11 +102,11 @@ export class UserService {
       const token = event.headers.authorization;
       const payload = await VerifyToken(token);
       if (!payload) return ErrorResponse(403, "authorization failed!");
-  
+
       const input = plainToClass(VerificationInput, event.body);
       const error = await AppValidationError(input);
       if (error) return ErrorResponse(404, error);
-  
+
       const { verification_code, expiry } = await this.repository.findAccount(
         payload.email
       );
@@ -105,7 +115,7 @@ export class UserService {
         // check expiry
         const currentTime = new Date();
         const diff = TimeDifference(expiry, currentTime.toISOString(), "m");
-  
+
         if (diff > 0) {
           await this.repository.updateVerifyUser(payload.user_id)
         } else {
@@ -123,13 +133,13 @@ export class UserService {
     try {
       const token = event.headers.authorization;
       const payload = await VerifyToken(token);
-  
+
       if(payload === false) return ErrorResponse(403, "authorization failed!");
-  
+
       const input = plainToClass(ProfileInput, event.body);
       const error = await AppValidationError(input);
       if (error) return ErrorResponse(404, error);
-  
+
       await this.repository.createProfile(payload.user_id, input)
       return SuccessResponse({ message: 'profile created successfully!'});
     } catch (error) {
@@ -141,9 +151,9 @@ export class UserService {
     try {
       const token = event.headers.authorization;
       const payload = await VerifyToken(token);
-  
+
       if(payload === false) return ErrorResponse(403, "authorization failed!");
-  
+
       const result = await this.repository.getUserProfile(payload.user_id)
       return SuccessResponse(result);
 
@@ -156,20 +166,20 @@ export class UserService {
     try {
       const token = event.headers.authorization;
       const payload = await VerifyToken(token);
-  
+
       if(payload === false) return ErrorResponse(403, "authorization failed!");
-  
+
       const input = plainToClass(ProfileInput, event.body);
       const error = await AppValidationError(input);
       if (error) return ErrorResponse(404, error);
-  
+
       await this.repository.editProfile(payload.user_id, input)
       return SuccessResponse({ message: 'profile updated successfully!'});
     } catch (error) {
       return ErrorResponse(500, error)
     }
   }
-  
+
   // Payment Section
   async CreatePaymentMethod(event: APIGatewayProxyEventV2) {
     return SuccessResponse({ message: 'response from Create Payment Method'});
