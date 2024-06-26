@@ -41,8 +41,24 @@ export class ProductService {
     if(!productId) return ErrorResponse(404, 'product id not found!')
 
     const data = await this._repository.getProductById(productId)
-    
+
     if (data === null) return ErrorResponse(404, 'Product not found');
+    return SuccessResponse(data);
+  }
+
+  async getSellerProducts(event: APIGatewayEvent) {
+    const token = event.headers.Authorization;
+    const user = await AuthUser(token);
+    if (!user) return ErrorResponse(403, "authorization failed");
+
+    if (user.user_type.toUpperCase() !== "SELLER") {
+      return ErrorResponse(
+        403,
+        "you need to join the seller program to manage product"
+      );
+    }
+
+    const data = await this._repository.getAllSellerProducts(user.user_id);
     return SuccessResponse(data);
   }
 
@@ -74,7 +90,7 @@ export class ProductService {
     return SuccessResponse(deleteResult);
   }
 
-  // http calls // later stage will convert this thing to RPC & Queue 
+  // http calls // later stage will convert this thing to RPC & Queue
 
   async handleQueueOperation(event: APIGatewayProxyEvent) {
     const input = plainToClass(ServiceInput, event.body);

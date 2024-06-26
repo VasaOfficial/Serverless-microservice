@@ -1,5 +1,4 @@
 import { APIGatewayEvent, APIGatewayProxyResult, Context } from "aws-lambda";
-import { ErrorResponse } from "../utility/response";
 import { ProductService } from "../service/product-service";
 import { ProductRepository } from "../repository/product-repository";
 import "../utility";
