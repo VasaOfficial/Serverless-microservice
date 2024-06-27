@@ -10,6 +10,7 @@ export class ProductRepository {
     category_id,
     price,
     image_url,
+    seller_id
   }: ProductInput): Promise<ProductDoc> {
     return products.create({
       name,
@@ -17,13 +18,18 @@ export class ProductRepository {
       category_id,
       price,
       image_url,
-      availability: true
+      availability: true,
+      seller_id
     })
   }
 
   // pagination
   async getAllProducts(offset = 0, pages?: number) {
     return products.find().skip(offset).limit(pages ? pages : 10)
+  }
+
+  async getAllSellerProducts(seller_id: number) {
+    return products.find({ seller_id: seller_id });
   }
 
   async getProductById(id: string) {
