@@ -1,9 +1,10 @@
 # Terraform files
-.terraform/
+.terraform
 terraform.tfstate
 terraform.tfstate.backup
 *.tfstate
 *.tfstate.backup
+.terraform.lock.hcl
 
 # Zip files
 *.zip
