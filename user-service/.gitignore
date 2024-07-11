@@ -1,9 +1,31 @@
-node_modules
-.serverless
-.env
-config
-build
-FirebaseService.json
+# Terraform files
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate
+*.tfstate.backup
+
+# Zip files
 *.zip
+
+# Build directories
+dist/
+build/
+
+# Node modules
+node_modules/
+
+# Logs
 *.log
-dist
+
+# Local environment variables
+.env
+FirebaseService.json
+config
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore VSCode directories
+.vscode/
