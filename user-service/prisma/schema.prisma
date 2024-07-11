@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
@@ -15,11 +16,8 @@ datasource db {
 
 model User {
   user_id            Int      @id @default(autoincrement())
-  phone              String
+  firebaseUid        String
   email              String    @unique
-  password           String
-  salt               String
-  userType           String
   first_name         String?
   last_name          String?
   profile_pic        String?
@@ -32,8 +30,6 @@ model User {
   stripe_id          String?
   payment_id         String?
   paymentMethods   PaymentMethod[]
-
-  @@index([phone])
 }
 
 model Address {

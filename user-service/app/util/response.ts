@@ -31,7 +31,7 @@ export const ErrorResponse = (code = 1000, error: unknown) => {
   if (Array.isArray(error)) {
     const errorObject = error[0].constraints;
     const errorMessage =
-      errorObject[Object.keys(errorObject)[0]] || "Error Occured";
+      errorObject[Object.keys(errorObject)[0]] || "Error Occurred";
     return formatResponse(code, errorMessage, errorMessage);
   }
 

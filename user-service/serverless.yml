@@ -11,17 +11,6 @@ provider:
   region: eu-central-1
   httpApi:
     cors: true
-  # SNS Topic
-  environment:
-    SNS_TOPIC: ${self:resources.Resources.CustomerTopic.Properties.TopicName}
-    NOTIFY_TOPIC: ${cf:notify-stack.notifySvcArn}
-  iamRoleStatements:
-    - Effect: "Allow"
-      Action:
-        - "sns:Publish"
-      Resource:
-        - ${self:resources.Outputs.CustomerTopicInfo.Value}
-        - ${cf:notify-stack.notifySvcArn}
 
 custom:
   stage: "dev"
@@ -30,6 +19,7 @@ custom:
     lambdaPort: 4002
 
 functions:
+  # User Section
   signup:
     handler: app/handler.SignUp
     events:
@@ -54,6 +44,7 @@ functions:
       - httpApi:
           path: /verify
           method: get
+  # DONE
   create-profile:
     handler: app/handler.CreateProfile
     events:
@@ -145,20 +136,3 @@ plugins:
 
 package:
   individually: true
-
-resources:
-  Resources:
-    CustomerTopic:
-      Type: AWS::SNS::Topic
-      Properties:
-        DisplayName: "customer sns topic description"
-        TopicName: CustomerTopic
-
-  # output for later usages
-  Outputs:
-    CustomerTopicInfo:
-      Description: customer-topic
-      Value:
-        Ref: CustomerTopic
-      Export:
-        Name: customer-topic

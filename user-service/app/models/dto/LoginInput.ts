@@ -7,3 +7,5 @@ export class LoginInput {
   @Length(6, 32)
   password: string
 }
+
+export class SignupInput extends LoginInput {}

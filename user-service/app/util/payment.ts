@@ -1,4 +1,4 @@
-import { CreatePaymentSessionInput } from "app/models/dto/CreatePaymentSessionInput";
+import { CreatePaymentSessionInput } from "../models/dto/CreatePaymentSessionInput";
 import Stripe from "stripe";
 
 export const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;

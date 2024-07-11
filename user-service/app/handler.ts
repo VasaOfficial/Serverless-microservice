@@ -4,7 +4,5 @@ export * from './handlers/userHandler'
 dotenv.config()
 
 export * from './handlers/userHandler'
-export * from './handlers/cartHandler'
-export * from './handlers/orderHandler'
-export * from './handlers/paymentHandler'
-export * from './handlers/sellerHandler'
+// export * from './handlers/cartHandler'
+// export * from './handlers/orderHandler'

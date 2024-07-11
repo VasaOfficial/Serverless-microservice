@@ -9,11 +9,13 @@
     "moduleResolution": "Node",
     "sourceMap": true,
     "baseUrl": ".",
+    "rootDir": "app/",
+    "outDir": "dist/",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
   },
-  "include": ["app/**/*", "*.ts"],
+  "include": ["app/**/*", "*.ts", "../uga.ts"],
   "exclude": ["node_modules"]
 }
