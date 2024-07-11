@@ -6,3 +6,4 @@ build
 FirebaseService.json
 *.zip
 *.log
+dist
