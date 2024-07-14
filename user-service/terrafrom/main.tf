@@ -44,68 +44,112 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
 }
 
 // S3 bucket for Lambda code
-resource "random_pet" "lambda_bucket_name" {
-  prefix = "user-service"
-  length = 2
-}
-
-resource "aws_s3_bucket" "lambda_bucket" {
-  bucket = random_pet.lambda_bucket_name.id
+resource "aws_s3_bucket" "user-service-s3-bucket" {
+  bucket = "user-service-s3-bucket"
   force_destroy = true
 }
 
 resource "aws_s3_bucket_public_access_block" "lambda_bucket" {
-  bucket = aws_s3_bucket.lambda_bucket.id
+  bucket = aws_s3_bucket.user_service_s3_bucket.id
 
-  block_public_acls = true
+  block_public_acls   = true
   block_public_policy = true
-  ignore_public_acls = true
+  ignore_public_acls  = true
   restrict_public_buckets = true
-}
-
-// Lambda Layer
-resource "aws_lambda_layer_version" "user-service-dependencies" {
-  layer_name          = "user-service-dependencies"
-  s3_bucket           = aws_s3_bucket.lambda_bucket.id
-  s3_key              = aws_s3_object.lambda_layer_code.key
-  compatible_runtimes = ["nodejs18.x"]
 }
 
 // lambda functions
 resource "aws_lambda_function" "signup_function" {
   function_name    = "signup"
 
-  s3_bucket        = aws_s3_bucket.lambda_bucket.id
+  s3_bucket        = aws_s3_bucket.user-service-s3-bucket.id
   s3_key           = aws_s3_object.lambda_function_code.key
 
   role             = aws_iam_role.lambda_exec_role.arn
   handler          = "dist/handler.SignUp"
   runtime          = "nodejs18.x"
-  layers           = [aws_lambda_layer_version.user-service-dependencies.arn]
+
+  environment {
+    variables = {
+      FIREBASE_API_KEY = var.firebase_api_key
+      FIREBASE_AUTH_DOMAIN = var.firebase_auth_domain
+      FIREBASE_PROJECT_ID = var.firebase_project_id
+      FIREBASE_STORAGE_BUCKET = var.firebase_storage_bucket
+      FIREBASE_MESSAGING_SENDER_ID = var.firebase_messaging_sender_id
+      FIREBASE_APP_ID = var.firebase_app_id
+      FIREBASE_TYPE = var.firebase_type
+      FIREBASE_PRIVATE_KEY_ID = var.firebase_private_key_id
+      FIREBASE_PRIVATE_KEY = var.firebase_private_key
+      FIREBASE_CLIENT_EMAIL = var.firebase_client_email
+      FIREBASE_CLIENT_ID = var.firebase_client_id
+      FIREBASE_AUTH_URI = var.firebase_auth_uri
+      FIREBASE_TOKEN_URI = var.firebase_token_uri
+      FIREBASE_AUTH_PROVIDER_X509_CERT_URL = var.firebase_auth_provider_x509_cert_url
+      FIREBASE_CLIENT_X509_CERT_URL = var.firebase_client_x509_cert_url
+    }
+  }
 }
 
 resource "aws_lambda_function" "login_function" {
   function_name    = "login"
 
-  s3_bucket        = aws_s3_bucket.lambda_bucket.id
+  s3_bucket        = aws_s3_bucket.user-service-s3-bucket.id
   s3_key           = aws_s3_object.lambda_function_code.key
 
   role             = aws_iam_role.lambda_exec_role.arn
   handler          = "dist/handler.Login"
   runtime          = "nodejs18.x"
-  layers           = [aws_lambda_layer_version.user-service-dependencies.arn]
+
+  environment {
+    variables = {
+      FIREBASE_API_KEY = var.firebase_api_key
+      FIREBASE_AUTH_DOMAIN = var.firebase_auth_domain
+      FIREBASE_PROJECT_ID = var.firebase_project_id
+      FIREBASE_STORAGE_BUCKET = var.firebase_storage_bucket
+      FIREBASE_MESSAGING_SENDER_ID = var.firebase_messaging_sender_id
+      FIREBASE_APP_ID = var.firebase_app_id
+      FIREBASE_TYPE = var.firebase_type
+      FIREBASE_PRIVATE_KEY_ID = var.firebase_private_key_id
+      FIREBASE_PRIVATE_KEY = var.firebase_private_key
+      FIREBASE_CLIENT_EMAIL = var.firebase_client_email
+      FIREBASE_CLIENT_ID = var.firebase_client_id
+      FIREBASE_AUTH_URI = var.firebase_auth_uri
+      FIREBASE_TOKEN_URI = var.firebase_token_uri
+      FIREBASE_AUTH_PROVIDER_X509_CERT_URL = var.firebase_auth_provider_x509_cert_url
+      FIREBASE_CLIENT_X509_CERT_URL = var.firebase_client_x509_cert_url
+    }
+  }
 }
 
 resource "aws_lambda_function" "resetpass_function" {
   function_name    = "resetpass"
 
-  s3_bucket        = aws_s3_bucket.lambda_bucket.id
+  s3_bucket        = aws_s3_bucket.user-service-s3-bucket.id
   s3_key           = aws_s3_object.lambda_function_code.key
 
   role             = aws_iam_role.lambda_exec_role.arn
   handler          = "dist/handler.ResetPassword"
   runtime          = "nodejs18.x"
-  layers           = [aws_lambda_layer_version.user-service-dependencies.arn]
+
+  environment {
+    variables = {
+      FIREBASE_API_KEY = var.firebase_api_key
+      FIREBASE_AUTH_DOMAIN = var.firebase_auth_domain
+      FIREBASE_PROJECT_ID = var.firebase_project_id
+      FIREBASE_STORAGE_BUCKET = var.firebase_storage_bucket
+      FIREBASE_MESSAGING_SENDER_ID = var.firebase_messaging_sender_id
+      FIREBASE_APP_ID = var.firebase_app_id
+      FIREBASE_TYPE = var.firebase_type
+      FIREBASE_PRIVATE_KEY_ID = var.firebase_private_key_id
+      FIREBASE_PRIVATE_KEY = var.firebase_private_key
+      FIREBASE_CLIENT_EMAIL = var.firebase_client_email
+      FIREBASE_CLIENT_ID = var.firebase_client_id
+      FIREBASE_AUTH_URI = var.firebase_auth_uri
+      FIREBASE_TOKEN_URI = var.firebase_token_uri
+      FIREBASE_AUTH_PROVIDER_X509_CERT_URL = var.firebase_auth_provider_x509_cert_url
+      FIREBASE_CLIENT_X509_CERT_URL = var.firebase_client_x509_cert_url
+    }
+  }
 }
 
 // api gateway
@@ -184,3 +228,19 @@ resource "aws_lambda_permission" "resetpass_permission" {
 output "api_base_url" {
   value = aws_apigatewayv2_stage.default_stage.invoke_url
 }
+
+variable "firebase_api_key" {}
+variable "firebase_auth_domain" {}
+variable "firebase_project_id" {}
+variable "firebase_storage_bucket" {}
+variable "firebase_messaging_sender_id" {}
+variable "firebase_app_id" {}
+variable "firebase_type" {}
+variable "firebase_private_key_id" {}
+variable "firebase_private_key" {}
+variable "firebase_client_email" {}
+variable "firebase_client_id" {}
+variable "firebase_auth_uri" {}
+variable "firebase_token_uri" {}
+variable "firebase_auth_provider_x509_cert_url" {}
+variable "firebase_client_x509_cert_url" {}
