@@ -63,6 +63,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
 
+      - name: Upload Lambda to S3
+        run: aws s3 cp user-service/lambda-build.zip s3://user-service-s3-bucket/lambda-build.zip
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
@@ -94,6 +97,3 @@ jobs:
           FIREBASE_CLIENT_X509_CERT_URL: ${{ secrets.FIREBASE_CLIENT_X509_CERT_URL }}
         run: terraform apply -auto-approve
         working-directory: ./user-service/terraform
-
-      - name: Upload Lambda to S3
-        run: aws s3 cp user-service/lambda-build.zip s3://user-service-s3-bucket/lambda-build.zip

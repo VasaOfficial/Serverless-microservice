@@ -58,6 +58,12 @@ resource "aws_s3_bucket_public_access_block" "lambda_bucket" {
   restrict_public_buckets = true
 }
 
+# Declare the S3 object for the Lambda function code
+resource "aws_s3_object" "lambda_function_code" {
+  bucket = aws_s3_bucket.user_service_s3_bucket.bucket
+  key    = "lambda-build.zip"
+}
+
 // lambda functions
 resource "aws_lambda_function" "signup_function" {
   function_name    = "signup"
