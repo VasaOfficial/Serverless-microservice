@@ -85,7 +85,6 @@ jobs:
         run: |
           pwd
           ls -la
-          ls -la user-service
 
       - name: Upload Lambda to S3
         run: aws s3 cp user-service/lambda-build.zip s3://user-service-s3-bucket/lambda-build.zip
