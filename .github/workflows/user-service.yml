@@ -48,9 +48,6 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./user-service/terraform
 
     steps:
       - name: Checkout Code
@@ -62,6 +59,12 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1
+
+      - name: Print directory structure
+        run: |
+          pwd
+          ls -la
+          ls -la user-service
 
       - name: Upload Lambda to S3
         run: aws s3 cp user-service/dist/lambda-build.zip s3://user-service-s3-bucket/lambda-build.zip
