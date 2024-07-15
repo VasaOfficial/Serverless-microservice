@@ -65,15 +65,15 @@ jobs:
 
       - name: Terraform Initialize
         run: terraform init
-        working-directory: ./user-service/terraform
+        working-directory: user-service/terraform
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ./user-service/terraform
+        working-directory: user-service/terraform
 
       - name: Terraform Plan
         run: terraform plan
-        working-directory: ./user-service/terraform
+        working-directory: user-service/terraform
 
       - name: Terraform Apply
         env:
