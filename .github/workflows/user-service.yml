@@ -42,6 +42,22 @@ jobs:
       - name: Compile TypeScript
         run: npx tsc
 
+      - name: Verify Directory Structure Before Compilation
+        run: |
+          echo "Before Compilation:"
+          pwd
+          ls -la
+          ls -la app
+
+      - name: Compile TypeScript
+        run: npx tsc
+
+      - name: Verify Directory Structure After Compilation
+        run: |
+          echo "After Compilation:"
+          ls -la
+          ls -la dist
+
       - name: Zip Lambda build
         run: zip -r lambda-build.zip dist
 
