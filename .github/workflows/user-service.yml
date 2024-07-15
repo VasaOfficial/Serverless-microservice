@@ -55,7 +55,6 @@ jobs:
         run: |
           echo "After Compilation:"
           ls -la
-          ls -la dist
 
       - name: Zip Lambda build
         run: zip -r lambda-build.zip dist
@@ -64,11 +63,12 @@ jobs:
         run: |
           echo "Contents of user-service directory after zipping:"
           ls -la
-          ls -la dist
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./user-service
 
     steps:
       - name: Checkout Code
