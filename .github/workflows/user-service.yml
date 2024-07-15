@@ -2,6 +2,8 @@ name: Build and Deploy
 
 on:
   push:
+    paths:
+      - 'user-service/**'
     branches:
       - main
 
