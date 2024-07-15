@@ -48,9 +48,6 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: /user-service/terraform
 
     steps:
       - name: Checkout Code
@@ -68,12 +65,15 @@ jobs:
 
       - name: Terraform Initialize
         run: terraform init
+        working-directory: ./user-service/terraform
 
       - name: Terraform Validate
         run: terraform validate
+        working-directory: ./user-service/terraform
 
       - name: Terraform Plan
         run: terraform plan
+        working-directory: ./user-service/terraform
 
       - name: Terraform Apply
         env:
@@ -93,6 +93,7 @@ jobs:
           FIREBASE_AUTH_PROVIDER_X509_CERT_URL: ${{ secrets.FIREBASE_AUTH_PROVIDER_X509_CERT_URL }}
           FIREBASE_CLIENT_X509_CERT_URL: ${{ secrets.FIREBASE_CLIENT_X509_CERT_URL }}
         run: terraform apply -auto-approve
+        working-directory: ./user-service/terraform
 
       - name: Upload Lambda to S3
         run: aws s3 cp user-service/lambda-build.zip s3://user-service-s3-bucket/lambda-build.zip
