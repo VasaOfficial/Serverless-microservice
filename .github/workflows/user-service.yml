@@ -10,6 +10,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./user-service
 
     steps:
       - name: Checkout Code
@@ -33,11 +36,17 @@ jobs:
       - name: Install Dependencies
         run: npm install --omit=dev
 
+      - name: Install TypeScript
+        run: npm install typescript --save-dev
+
       - name: Compile TypeScript
-        run: npm run build
+        run: npx tsc
+
+      - name: Print files in user service
+        run: ls -la
 
       - name: Zip Lambda build
-        run: zip -r user-service/lambda-build.zip user-service/dist/*
+        run: zip -r lambda-build.zip dist
 
   deploy:
     needs: build
