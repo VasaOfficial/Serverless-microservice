@@ -48,6 +48,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./user-service/terraform
 
     steps:
       - name: Checkout Code
@@ -72,15 +75,12 @@ jobs:
 
       - name: Terraform Initialize
         run: terraform init
-        working-directory: user-service/terraform
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: user-service/terraform
 
       - name: Terraform Plan
         run: terraform plan
-        working-directory: user-service/terraform
 
       - name: Terraform Apply
         env:
