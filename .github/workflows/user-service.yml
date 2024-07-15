@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./user-service
+        working-directory: /user-service
 
     steps:
       - name: Checkout Code
@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./user-service/terraform
+        working-directory: /user-service/terraform
 
     steps:
       - name: Checkout Code
