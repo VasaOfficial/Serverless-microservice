@@ -50,7 +50,7 @@ resource "aws_s3_bucket" "user-service-s3-bucket" {
 }
 
 resource "aws_s3_bucket_public_access_block" "lambda_bucket" {
-  bucket = aws_s3_bucket.user_service_s3_bucket.id
+  bucket = aws_s3_bucket.user-service-s3-bucket.id
 
   block_public_acls   = true
   block_public_policy = true
@@ -60,8 +60,9 @@ resource "aws_s3_bucket_public_access_block" "lambda_bucket" {
 
 # Declare the S3 object for the Lambda function code
 resource "aws_s3_object" "lambda_function_code" {
-  bucket = aws_s3_bucket.user_service_s3_bucket.bucket
+  bucket = aws_s3_bucket.user-service-s3-bucket.bucket
   key    = "lambda-build.zip"
+  source = "${path.module}/user-service/lambda-build.zip"
 }
 
 // lambda functions
@@ -234,19 +235,3 @@ resource "aws_lambda_permission" "resetpass_permission" {
 output "api_base_url" {
   value = aws_apigatewayv2_stage.default_stage.invoke_url
 }
-
-variable "firebase_api_key" {}
-variable "firebase_auth_domain" {}
-variable "firebase_project_id" {}
-variable "firebase_storage_bucket" {}
-variable "firebase_messaging_sender_id" {}
-variable "firebase_app_id" {}
-variable "firebase_type" {}
-variable "firebase_private_key_id" {}
-variable "firebase_private_key" {}
-variable "firebase_client_email" {}
-variable "firebase_client_id" {}
-variable "firebase_auth_uri" {}
-variable "firebase_token_uri" {}
-variable "firebase_auth_provider_x509_cert_url" {}
-variable "firebase_client_x509_cert_url" {}
