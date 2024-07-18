@@ -48,6 +48,12 @@ jobs:
       - name: Zip Lambda build
         run: zip -r lambda-build.zip dist
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lambda-build
+          path: lambda-build.zip
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -59,24 +65,120 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: lambda-build
+          path: ./user-service
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: 'AKIA3KQ4MK2VW4Z6KGKY'
-          aws-secret-access-key: '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'
-          aws-region: 'eu-central-1'
-        # with:
-        #   aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        #   aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        #   aws-region: eu-central-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Verify Terraform location
+      - name: Create varibales.tf file
         run: |
-          echo "TERRAFORM"
-          ls -la
+          cat <<EOF > variables.tf
+          variable "firebase_api_key" {
+            default = "${{ secrets.FIREBASE_API_KEY }}"
+            type = string
+          }
+
+          variable "firebase_auth_domain" {
+            default = "${{ secrets.FIREBASE_AUTH_DOMAIN }}"
+            type = string
+          }
+
+          variable "firebase_project_id" {
+            default = "${{ secrets.FIREBASE_PROJECT_ID }}"
+            type = string
+          }
+
+          variable "firebase_storage_bucket" {
+            default = "${{ secrets.FIREBASE_STORAGE_BUCKET }}"
+            type = string
+          }
+
+          variable "firebase_messaging_sender_id" {
+            default = "${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}"
+            type = string
+          }
+
+          variable "firebase_app_id" {
+            default = "${{ secrets.FIREBASE_APP_ID }}"
+            type = string
+          }
+
+          variable "firebase_type" {
+            default = "${{ secrets.FIREBASE_TYPE }}"
+            type = string
+          }
+
+          variable "firebase_private_key_id" {
+            default = "${{ secrets.FIREBASE_PRIVATE_KEY_ID }}"
+            type = string
+          }
+
+          variable "firebase_private_key" {
+            default = "${{ secrets.FIREBASE_PRIVATE_KEY }}"
+            type = string
+          }
+
+          variable "firebase_client_email" {
+            default = "${{ secrets.FIREBASE_CLIENT_EMAIL }}"
+            type = string
+          }
+
+          variable "firebase_client_id" {
+            default = "${{ secrets.FIREBASE_CLIENT_ID }}"
+            type = string
+          }
+
+          variable "firebase_auth_uri" {
+            default = "${{ secrets.FIREBASE_AUTH_URI }}"
+            type = string
+          }
+
+          variable "firebase_token_uri" {
+            default = "${{ secrets.FIREBASE_TOKEN_URI }}"
+            type = string
+          }
+
+          variable "firebase_auth_provider_x509_cert_url" {
+            default = "${{ secrets.FIREBASE_AUTH_PROVIDER_X509_CERT_URL }}"
+            type = string
+          }
+
+          variable "firebase_client_x509_cert_url" {
+            default = "${{ secrets.FIREBASE_CLIENT_X509_CERT_URL }}"
+            type = string
+          }
+          EOF
+
+      # - name: Create varibales.tf file
+      #   run: |
+      #     cat <<EOF > varibales.tf
+      #     firebase_api_key = "${{ secrets.FIREBASE_API_KEY }}"
+      #     firebase_auth_domain = "${{ secrets.FIREBASE_AUTH_DOMAIN }}"
+      #     firebase_project_id = "${{ secrets.FIREBASE_PROJECT_ID }}"
+      #     firebase_storage_bucket = "${{ secrets.FIREBASE_STORAGE_BUCKET }}"
+      #     firebase_messaging_sender_id = "${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}"
+      #     firebase_app_id = "${{ secrets.FIREBASE_APP_ID }}"
+      #     firebase_type = "${{ secrets.FIREBASE_TYPE }}"
+      #     firebase_private_key_id = "${{ secrets.FIREBASE_PRIVATE_KEY_ID }}"
+      #     firebase_private_key = "${{ secrets.FIREBASE_PRIVATE_KEY }}"
+      #     firebase_client_email = "${{ secrets.FIREBASE_CLIENT_EMAIL }}"
+      #     firebase_client_id = "${{ secrets.FIREBASE_CLIENT_ID }}"
+      #     firebase_auth_uri = "${{ secrets.FIREBASE_AUTH_URI }}"
+      #     firebase_token_uri = "${{ secrets.FIREBASE_TOKEN_URI }}"
+      #     firebase_auth_provider_x509_cert_url = "${{ secrets.FIREBASE_AUTH_PROVIDER_X509_CERT_URL }}"
+      #     firebase_client_x509_cert_url = "${{ secrets.FIREBASE_CLIENT_X509_CERT_URL }}"
+      #     EOF
 
       - name: Terraform Initialize
         run: terraform init
@@ -91,20 +193,4 @@ jobs:
         run: terraform plan
 
       - name: Terraform Apply
-        env:
-          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-          FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-          FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-          FIREBASE_TYPE: ${{ secrets.FIREBASE_TYPE }}
-          FIREBASE_PRIVATE_KEY_ID: ${{ secrets.FIREBASE_PRIVATE_KEY_ID }}
-          FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
-          FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
-          FIREBASE_CLIENT_ID: ${{ secrets.FIREBASE_CLIENT_ID }}
-          FIREBASE_AUTH_URI: ${{ secrets.FIREBASE_AUTH_URI }}
-          FIREBASE_TOKEN_URI: ${{ secrets.FIREBASE_TOKEN_URI }}
-          FIREBASE_AUTH_PROVIDER_X509_CERT_URL: ${{ secrets.FIREBASE_AUTH_PROVIDER_X509_CERT_URL }}
-          FIREBASE_CLIENT_X509_CERT_URL: ${{ secrets.FIREBASE_CLIENT_X509_CERT_URL }}
         run: terraform apply -auto-approve
