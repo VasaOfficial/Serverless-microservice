@@ -48,11 +48,14 @@ jobs:
       - name: Zip Lambda build
         run: zip -r lambda-build.zip dist
 
+      - name: List Directory Contents (Debug)
+        run: ls -la
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: lambda-build
-          path: lambda-build.zip
+          path: ./user-service/lambda-build.zip
 
   deploy:
     needs: build
