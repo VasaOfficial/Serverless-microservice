@@ -42,9 +42,6 @@ jobs:
       - name: Compile TypeScript
         run: npx tsc
 
-      - name: Compile TypeScript
-        run: npx tsc
-
       - name: Zip Lambda build
         run: zip -r lambda-build.zip dist
 
@@ -55,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lambda-build
-          path: ./user-service/lambda-build.zip
+          path: ./lambda-build.zip
 
   deploy:
     needs: build
