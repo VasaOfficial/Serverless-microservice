@@ -62,7 +62,7 @@ resource "aws_s3_bucket_public_access_block" "lambda_bucket" {
 resource "aws_s3_object" "lambda_function_code" {
   bucket = aws_s3_bucket.user-service-s3-bucket.bucket
   key    = "lambda-build.zip"
-  source = "${path.module}/user-service/lambda-build.zip"
+  source = "${path.root}/../lambda-build.zip"
 }
 
 // lambda functions

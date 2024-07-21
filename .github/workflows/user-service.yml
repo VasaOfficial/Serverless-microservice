@@ -69,7 +69,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: lambda-build
-          path: /home/runner/work/EbayClone/EbayClone/user-service
+          path: ${{ github.workspace }}/user-service
 
       - name: List Directory Contents (Debug)
         run: |
