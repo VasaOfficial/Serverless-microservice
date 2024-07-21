@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lambda-build
-          path: ./lambda-build.zip
+          path: ./user-service/lambda-build.zip
 
   deploy:
     needs: build
@@ -70,6 +70,11 @@ jobs:
         with:
           name: lambda-build
           path: ./user-service
+
+      - name: List Directory Contents (Debug)
+        run: |
+          ls -la
+          ls -la ./user-service
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
