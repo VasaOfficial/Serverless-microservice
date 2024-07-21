@@ -69,12 +69,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: lambda-build
-          path: ./user-service
+          path: ../user-service
 
       - name: List Directory Contents (Debug)
         run: |
           ls -la
-          ls -la ./user-service
+          ls -la ../user-service
+          ls -la ../user-service/lambda-build.zip
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
