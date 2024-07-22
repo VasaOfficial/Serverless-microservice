@@ -45,9 +45,6 @@ jobs:
       - name: Zip Lambda build
         run: zip -r lambda-build.zip dist
 
-      - name: List Directory Contents (Debug)
-        run: ls -la
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -70,13 +67,6 @@ jobs:
         with:
           name: lambda-build
           path: ${{ github.workspace }}/user-service
-
-      - name: List Directory Contents (Debug)
-        run: |
-           echo "Current Directory:"
-           pwd
-           echo "Contents of parent directory:"
-           ls -la ../
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
