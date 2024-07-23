@@ -4,8 +4,6 @@ terraform.tfstate
 terraform.tfstate.backup
 *.tfstate
 *.tfstate.backup
-.terraform.lock.hcl
-variables.tf
 terraform.tfvars
 
 # Zip files
