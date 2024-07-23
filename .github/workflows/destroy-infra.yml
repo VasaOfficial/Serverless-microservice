@@ -1,7 +1,6 @@
-name: Destroy Infrastructure
-
+name: Terraform Destroy
 on:
-  workflow_dispatch:
+ workflow_dispatch:
 
 jobs:
   destroy:
