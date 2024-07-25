@@ -237,7 +237,3 @@ resource "aws_lambda_permission" "resetpass_permission" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.http_api.execution_arn}/*/*"
 }
-
-output "api_base_url" {
-  value = aws_apigatewayv2_stage.default_stage.invoke_url
-}

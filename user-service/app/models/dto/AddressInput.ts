@@ -1,31 +1,32 @@
-import { Length } from "class-validator";
+import { Length } from 'class-validator'
 
 export class AddressInput {
-  id: number;
-  
+  id: number
+
   @Length(3, 32)
-  addressLine1: string;
-  addressLine2: string;
+  addressLine1: string
+
+  addressLine2: string
 
   @Length(3, 12)
-  city: string;
+  city: string
 
   @Length(4, 6)
-  post_code: number;
+  post_code: number
 
   @Length(2, 13)
-  country: string;
+  country: string
 }
 
 export class ProfileInput {
   @Length(3, 32)
-  firstName: string;
+  firstName: string
 
   @Length(3, 32)
-  lastName: string;
+  lastName: string
 
   @Length(5, 6)
-  userType: string;
+  userType: string
 
   address: AddressInput
 }

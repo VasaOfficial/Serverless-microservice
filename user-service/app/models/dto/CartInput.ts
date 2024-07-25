@@ -1,4 +1,4 @@
-import { IsNumber, Length } from "class-validator"
+import { IsNumber, Length } from 'class-validator'
 
 export class CartInput {
   @IsNumber()

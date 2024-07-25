@@ -1,52 +1,53 @@
-import { UserRepository } from "../repository/userRepository";
-import { ErrorResponse, SuccessResponse } from "../util/response";
-import { APIGatewayProxyEventV2 } from "aws-lambda";
-import { autoInjectable } from "tsyringe";
+import { APIGatewayProxyEventV2 } from 'aws-lambda'
+import { autoInjectable } from 'tsyringe'
 import { plainToClass } from 'class-transformer'
-import { SignupInput } from "../models/dto/LoginInput";
-import { AppValidationError } from "../util/errors";
-import { LoginInput } from "../models/dto/LoginInput";
-import { ProfileInput } from "../models/dto/AddressInput";
-import admin from '../config/firebase';
+import { ErrorResponse, SuccessResponse } from '../util/response'
+import { UserRepository } from '../repository/userRepository'
+import { SignupInput, LoginInput } from '../models/dto/LoginInput'
+import { AppValidationError } from '../util/errors'
+
+import { ProfileInput } from '../models/dto/AddressInput'
+import admin from '../config/firebase'
 
 @autoInjectable()
 export class UserService {
   repository: UserRepository
+
   constructor(repository: UserRepository) {
     this.repository = repository
   }
 
   async ResponseWithError(event: APIGatewayProxyEventV2) {
-    return ErrorResponse(404, "requested method is not supported!");
+    return ErrorResponse(404, 'requested method is not supported!')
   }
 
   // User Creation, Login and Verification
   async CreateUser(event: APIGatewayProxyEventV2) {
     try {
-      const input = plainToClass(SignupInput, event.body);
-      const error = await AppValidationError(input);
-      if (error) return ErrorResponse(404, error);
+      const input = plainToClass(SignupInput, event.body)
+      const error = await AppValidationError(input)
+      if (error) return ErrorResponse(404, error)
 
       const userRecord = await admin.auth().createUser({
         email: input.email,
         password: input.password,
-      });
+      })
 
       // const data = await this.repository.createAccount({
       //   email: input.email,
       //   firebaseUid: userRecord.uid,
       // });
 
-      await admin.auth().generateEmailVerificationLink(input.email);
+      await admin.auth().generateEmailVerificationLink(input.email)
 
       return SuccessResponse({
         message: 'User created successfully. Verification email sent.',
         uid: userRecord.uid,
         // userData: data,
-      });
+      })
     } catch (error) {
-      console.log(error);
-      return ErrorResponse(500, error);
+      console.log(error)
+      return ErrorResponse(500, error)
     }
   }
 
@@ -54,17 +55,17 @@ export class UserService {
     try {
       const input = plainToClass(LoginInput, event.body)
       const error = await AppValidationError(input)
-      if(error) return ErrorResponse(404, error)
+      if (error) return ErrorResponse(404, error)
 
-      const userRecord = await admin.auth().getUserByEmail(input.email);
+      const userRecord = await admin.auth().getUserByEmail(input.email)
 
       // Retrieve additional user data from the database
-      //const userData = await this.repository.findAccount(input.email);
+      // const userData = await this.repository.findAccount(input.email);
 
       return SuccessResponse({
         email: userRecord.email,
-        //userData,
-      });
+        // userData,
+      })
     } catch (error) {
       return ErrorResponse(500, error)
     }
@@ -74,16 +75,16 @@ export class UserService {
     try {
       const input = plainToClass(LoginInput, event.body)
       const error = await AppValidationError(input)
-      if(error) return ErrorResponse(404, error)
+      if (error) return ErrorResponse(404, error)
 
-      await admin.auth().generatePasswordResetLink(input.email);
+      await admin.auth().generatePasswordResetLink(input.email)
 
       return SuccessResponse({
         message: 'Password reset email sent successfully',
-      });
+      })
     } catch (error) {
-      console.error('Error sending password reset email:', error);
-      return ErrorResponse(500, error);
+      console.error('Error sending password reset email:', error)
+      return ErrorResponse(500, error)
     }
   }
 
@@ -141,14 +142,14 @@ export class UserService {
 
   // Payment Section
   async CreatePaymentMethod(event: APIGatewayProxyEventV2) {
-    return SuccessResponse({ message: 'response from Create Payment Method'});
+    return SuccessResponse({ message: 'response from Create Payment Method' })
   }
 
   async GetPaymentMethod(event: APIGatewayProxyEventV2) {
-    return SuccessResponse({ message: 'response from Get Payment Method'});
+    return SuccessResponse({ message: 'response from Get Payment Method' })
   }
 
   async UpdatePaymentMethod(event: APIGatewayProxyEventV2) {
-    return SuccessResponse({ message: 'response from Update Payment Method'});
+    return SuccessResponse({ message: 'response from Update Payment Method' })
   }
 }

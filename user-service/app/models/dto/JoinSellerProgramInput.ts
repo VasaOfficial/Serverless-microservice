@@ -1,28 +1,28 @@
-import { Length } from "class-validator";
-import { AddressInput } from "./AddressInput";
+import { Length } from 'class-validator'
+import { AddressInput } from './AddressInput'
 
 export class PaymentMethodInput {
   @Length(6, 24)
-  bankAccountNumber: number;
+  bankAccountNumber: number
 
   @Length(6, 12)
-  swiftCode: string;
+  swiftCode: string
 
   @Length(6, 12)
-  paymentType: string;
+  paymentType: string
 }
 
 export class SellerProgramInput extends PaymentMethodInput {
-  userType: string;
+  userType: string
 
   @Length(3, 16)
-  firstName: string;
+  firstName: string
 
   @Length(3, 16)
-  lastName: string;
+  lastName: string
 
   @Length(8, 12)
-  phoneNumber: string;
+  phoneNumber: string
 
-  address: AddressInput;
+  address: AddressInput
 }

@@ -35,10 +35,13 @@ jobs:
             ${{ runner.os }}-node-${{ hashFiles('user-service/package-lock.json') }}
 
       - name: Install Dependencies
-        run: npm install --omit=dev
+        run: npm install
 
-      - name: Install TypeScript
-        run: npm install typescript --save-dev
+      - name: Run Lint
+        run: npm run lint
+
+      - name: Run Prettier
+        run: npm run format
 
       - name: Compile TypeScript
         run: npx tsc

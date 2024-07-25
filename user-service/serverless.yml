@@ -1,5 +1,5 @@
 service: user-service
-frameworkVersion: "3"
+frameworkVersion: '3'
 
 useDotenv: true
 
@@ -7,13 +7,13 @@ provider:
   name: aws
   runtime: nodejs16.x
   versionFunctions: false
-  stage: "dev"
+  stage: 'dev'
   region: eu-central-1
   httpApi:
     cors: true
 
 custom:
-  stage: "dev"
+  stage: 'dev'
   serverless-offline:
     httpPort: 4000
     lambdaPort: 4002
