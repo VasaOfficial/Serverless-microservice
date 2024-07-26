@@ -41,3 +41,17 @@
 //     return false;
 //   }
 // };
+
+import admin from '../config/firebase'
+
+async function VerifyToken(token: string) {
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(token)
+    return decodedToken
+  } catch (error) {
+    console.error('Error verifying token:', error)
+    return null
+  }
+}
+
+export default VerifyToken

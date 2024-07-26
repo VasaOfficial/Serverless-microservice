@@ -6,7 +6,6 @@ import { UserRepository } from '../repository/userRepository'
 import { SignupInput, LoginInput } from '../models/dto/LoginInput'
 import { AppValidationError } from '../util/errors'
 
-import { ProfileInput } from '../models/dto/AddressInput'
 import admin from '../config/firebase'
 
 @autoInjectable()
@@ -17,7 +16,7 @@ export class UserService {
     this.repository = repository
   }
 
-  async ResponseWithError(event: APIGatewayProxyEventV2) {
+  async ResponseWithError() {
     return ErrorResponse(404, 'requested method is not supported!')
   }
 
@@ -86,70 +85,5 @@ export class UserService {
       console.error('Error sending password reset email:', error)
       return ErrorResponse(500, error)
     }
-  }
-
-  // User Profile
-  // async CreateProfile(event: APIGatewayProxyEventV2) {
-  //   try {
-  //     const token = event.headers.authorization;
-  //     const payload = await VerifyToken(token);
-
-  //     if(payload === false) return ErrorResponse(403, "authorization failed!");
-
-  //     const input = plainToClass(ProfileInput, event.body);
-  //     const error = await AppValidationError(input);
-  //     if (error) return ErrorResponse(404, error);
-
-  //     await this.repository.createProfile(payload.user_id, input)
-  //     return SuccessResponse({ message: 'profile created successfully!'});
-  //   } catch (error) {
-  //     return ErrorResponse(500, error)
-  //   }
-  // }
-
-  // async GetProfile(event: APIGatewayProxyEventV2) {
-  //   try {
-  //     const token = event.headers.authorization;
-  //     const payload = await VerifyToken(token);
-
-  //     if(payload === false) return ErrorResponse(403, "authorization failed!");
-
-  //     const result = await this.repository.getUserProfile(payload.user_id)
-  //     return SuccessResponse(result);
-
-  //   } catch (error) {
-  //     return ErrorResponse(500, error)
-  //   }
-  // }
-
-  // async EditProfile(event: APIGatewayProxyEventV2) {
-  //   try {
-  //     const token = event.headers.authorization;
-  //     const payload = await VerifyToken(token);
-
-  //     if(payload === false) return ErrorResponse(403, "authorization failed!");
-
-  //     const input = plainToClass(ProfileInput, event.body);
-  //     const error = await AppValidationError(input);
-  //     if (error) return ErrorResponse(404, error);
-
-  //     await this.repository.editProfile(payload.user_id, input)
-  //     return SuccessResponse({ message: 'profile updated successfully!'});
-  //   } catch (error) {
-  //     return ErrorResponse(500, error)
-  //   }
-  // }
-
-  // Payment Section
-  async CreatePaymentMethod(event: APIGatewayProxyEventV2) {
-    return SuccessResponse({ message: 'response from Create Payment Method' })
-  }
-
-  async GetPaymentMethod(event: APIGatewayProxyEventV2) {
-    return SuccessResponse({ message: 'response from Get Payment Method' })
-  }
-
-  async UpdatePaymentMethod(event: APIGatewayProxyEventV2) {
-    return SuccessResponse({ message: 'response from Update Payment Method' })
   }
 }

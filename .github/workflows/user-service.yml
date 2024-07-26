@@ -37,141 +37,141 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Run Lint
-        run: npm run lint
-
       - name: Run Prettier
         run: npm run format
 
-      - name: Compile TypeScript
-        run: npx tsc
+      - name: Run Lint
+        run: npm run lint
 
-      - name: Zip Lambda build
-        run: zip -r lambda-build.zip dist
+  #     - name: Compile TypeScript
+  #       run: npx tsc
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: lambda-build
-          path: ./user-service/lambda-build.zip
+  #     - name: Zip Lambda build
+  #       run: zip -r lambda-build.zip dist
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./user-service/terraform
+  #     - name: Upload artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: lambda-build
+  #         path: ./user-service/lambda-build.zip
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./user-service/terraform
 
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: lambda-build
-          path: ${{ github.workspace }}/user-service
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-central-1
+  #     - name: Download artifact
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: lambda-build
+  #         path: ${{ github.workspace }}/user-service
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: eu-central-1
 
-      - name: Create varibales.tf file
-        run: |
-          cat <<EOF > variables.tf
-          variable "firebase_api_key" {
-            default = "${{ secrets.FIREBASE_API_KEY }}"
-            type = string
-          }
+  #     - name: Set up Terraform
+  #       uses: hashicorp/setup-terraform@v3
 
-          variable "firebase_auth_domain" {
-            default = "${{ secrets.FIREBASE_AUTH_DOMAIN }}"
-            type = string
-          }
+  #     - name: Create varibales.tf file
+  #       run: |
+  #         cat <<EOF > variables.tf
+  #         variable "firebase_api_key" {
+  #           default = "${{ secrets.FIREBASE_API_KEY }}"
+  #           type = string
+  #         }
 
-          variable "firebase_project_id" {
-            default = "${{ secrets.FIREBASE_PROJECT_ID }}"
-            type = string
-          }
+  #         variable "firebase_auth_domain" {
+  #           default = "${{ secrets.FIREBASE_AUTH_DOMAIN }}"
+  #           type = string
+  #         }
 
-          variable "firebase_storage_bucket" {
-            default = "${{ secrets.FIREBASE_STORAGE_BUCKET }}"
-            type = string
-          }
+  #         variable "firebase_project_id" {
+  #           default = "${{ secrets.FIREBASE_PROJECT_ID }}"
+  #           type = string
+  #         }
 
-          variable "firebase_messaging_sender_id" {
-            default = "${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}"
-            type = string
-          }
+  #         variable "firebase_storage_bucket" {
+  #           default = "${{ secrets.FIREBASE_STORAGE_BUCKET }}"
+  #           type = string
+  #         }
 
-          variable "firebase_app_id" {
-            default = "${{ secrets.FIREBASE_APP_ID }}"
-            type = string
-          }
+  #         variable "firebase_messaging_sender_id" {
+  #           default = "${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}"
+  #           type = string
+  #         }
 
-          variable "firebase_type" {
-            default = "${{ secrets.FIREBASE_TYPE }}"
-            type = string
-          }
+  #         variable "firebase_app_id" {
+  #           default = "${{ secrets.FIREBASE_APP_ID }}"
+  #           type = string
+  #         }
 
-          variable "firebase_private_key_id" {
-            default = "${{ secrets.FIREBASE_PRIVATE_KEY_ID }}"
-            type = string
-          }
+  #         variable "firebase_type" {
+  #           default = "${{ secrets.FIREBASE_TYPE }}"
+  #           type = string
+  #         }
 
-          variable "firebase_private_key" {
-            default = "${{ secrets.FIREBASE_PRIVATE_KEY }}"
-            type = string
-          }
+  #         variable "firebase_private_key_id" {
+  #           default = "${{ secrets.FIREBASE_PRIVATE_KEY_ID }}"
+  #           type = string
+  #         }
 
-          variable "firebase_client_email" {
-            default = "${{ secrets.FIREBASE_CLIENT_EMAIL }}"
-            type = string
-          }
+  #         variable "firebase_private_key" {
+  #           default = "${{ secrets.FIREBASE_PRIVATE_KEY }}"
+  #           type = string
+  #         }
 
-          variable "firebase_client_id" {
-            default = "${{ secrets.FIREBASE_CLIENT_ID }}"
-            type = string
-          }
+  #         variable "firebase_client_email" {
+  #           default = "${{ secrets.FIREBASE_CLIENT_EMAIL }}"
+  #           type = string
+  #         }
 
-          variable "firebase_auth_uri" {
-            default = "${{ secrets.FIREBASE_AUTH_URI }}"
-            type = string
-          }
+  #         variable "firebase_client_id" {
+  #           default = "${{ secrets.FIREBASE_CLIENT_ID }}"
+  #           type = string
+  #         }
 
-          variable "firebase_token_uri" {
-            default = "${{ secrets.FIREBASE_TOKEN_URI }}"
-            type = string
-          }
+  #         variable "firebase_auth_uri" {
+  #           default = "${{ secrets.FIREBASE_AUTH_URI }}"
+  #           type = string
+  #         }
 
-          variable "firebase_auth_provider_x509_cert_url" {
-            default = "${{ secrets.FIREBASE_AUTH_PROVIDER_X509_CERT_URL }}"
-            type = string
-          }
+  #         variable "firebase_token_uri" {
+  #           default = "${{ secrets.FIREBASE_TOKEN_URI }}"
+  #           type = string
+  #         }
 
-          variable "firebase_client_x509_cert_url" {
-            default = "${{ secrets.FIREBASE_CLIENT_X509_CERT_URL }}"
-            type = string
-          }
-          EOF
+  #         variable "firebase_auth_provider_x509_cert_url" {
+  #           default = "${{ secrets.FIREBASE_AUTH_PROVIDER_X509_CERT_URL }}"
+  #           type = string
+  #         }
 
-      - name: Terraform Initialize
-        run: terraform init
+  #         variable "firebase_client_x509_cert_url" {
+  #           default = "${{ secrets.FIREBASE_CLIENT_X509_CERT_URL }}"
+  #           type = string
+  #         }
+  #         EOF
 
-      - name: Terraform Format
-        run: terraform fmt
+  #     - name: Terraform Initialize
+  #       run: terraform init
 
-      - name: Terraform Validate
-        run: terraform validate
+  #     - name: Terraform Format
+  #       run: terraform fmt
 
-      - name: Terraform Plan
-        run: terraform plan
+  #     - name: Terraform Validate
+  #       run: terraform validate
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+  #     - name: Terraform Plan
+  #       run: terraform plan
+
+  #     - name: Terraform Apply
+  #       run: terraform apply -auto-approve

@@ -1,7 +1,7 @@
 // import { APIGatewayProxyEventV2 } from "aws-lambda";
 // import middy from "@middy/core";
 // import bodyParser from "@middy/http-json-body-parser";
-// // import { CartService } from "app/services/cartService";
+// import { CartService } from "app/services/cartService";
 // import { CartRepository } from "./../repository/cartRepository";
 
 // const cartService = new CartService(new CartRepository());

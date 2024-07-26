@@ -45,24 +45,6 @@ functions:
           path: /verify
           method: get
   # DONE
-  create-profile:
-    handler: app/handler.CreateProfile
-    events:
-      - httpApi:
-          path: /user
-          method: post
-  edit-profile:
-    handler: app/handler.EditProfile
-    events:
-      - httpApi:
-          path: /user
-          method: put
-  get-profile:
-    handler: app/handler.GetProfile
-    events:
-      - httpApi:
-          path: /user
-          method: get
   # Cart Section
   create-cart:
     handler: app/handler.CreateCart

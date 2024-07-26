@@ -17,15 +17,3 @@ export const Login = middy((event: APIGatewayProxyEventV2) => {
 export const ResetPassword = middy((event: APIGatewayProxyEventV2) => {
   return service.ResetPassword(event)
 }).use(bodyParser())
-
-// export const CreateProfile = middy((event: APIGatewayProxyEventV2) => {
-//   return service.CreateProfile(event);
-// }).use(bodyParser());
-
-// export const EditProfile = middy((event: APIGatewayProxyEventV2) => {
-//   return service.EditProfile(event);
-// }).use(bodyParser());
-
-// export const GetProfile = middy((event: APIGatewayProxyEventV2) => {
-//   return service.GetProfile(event);
-// }).use(bodyParser());
