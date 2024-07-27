@@ -1,22 +1,22 @@
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-import { ServiceStack } from './service-stack';
-import { ApiGatewayStack } from './api-gateway-stack';
-import { S3BucketStack } from './s3bucket_stack';
+import * as cdk from 'aws-cdk-lib'
+import { Construct } from 'constructs'
+import { ServiceStack } from './service-stack'
+import { ApiGatewayStack } from './api-gateway-stack'
+import { S3BucketStack } from './s3bucket_stack'
 
 export class ProductServiceStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: cdk.StackProps) {
-    super(scope, id, props);
+    super(scope, id, props)
 
-    const { bucket } = new S3BucketStack(this, "productsImages");
+    const { bucket } = new S3BucketStack(this, 'productsImages')
 
     const { services } = new ServiceStack(this, 'ProductService', {
       bucket: bucket.bucketName,
-    });
+    })
 
-    bucket.grantReadWrite(services.imageUploader);
+    bucket.grantReadWrite(services.imageUploader)
     new ApiGatewayStack(this, 'ProductApiGateway', {
-      services: services
-    });
+      services: services,
+    })
   }
 }
