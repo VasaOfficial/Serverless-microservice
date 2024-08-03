@@ -29,29 +29,29 @@ functions:
           path: /login
           method: post
 
-  logout:
-    handler: app/handler.Logout
-    timeout: 30
-    events:
-      - httpApi:
-          path: /logout
-          method: post
+  # logout:
+  #   handler: app/handler.Logout
+  #   timeout: 30
+  #   events:
+  #     - httpApi:
+  #         path: /logout
+  #         method: post
 
-  resetPassword:
-    handler: app/handler.ResetPassword
-    timeout: 30
-    events:
-      - httpApi:
-          path: /passreset
-          method: post
+  # resetPassword:
+  #   handler: app/handler.ResetPassword
+  #   timeout: 30
+  #   events:
+  #     - httpApi:
+  #         path: /passreset
+  #         method: post
 
-  validateToken:
-    handler: app/handler.ValidateToken
-    timeout: 30
-    events:
-      - httpApi:
-          path: /validate
-          method: get
+  # validateToken:
+  #   handler: app/handler.ValidateToken
+  #   timeout: 30
+  #   events:
+  #     - httpApi:
+  #         path: /validate
+  #         method: get
 
 build:
   esbuild:
@@ -131,9 +131,6 @@ build:
   #     - httpApi:
   #         path: /payment-methods/{id}
   #         method: put
-
-plugins:
-- serverless-offline
 
 package:
   individually: true

@@ -5,8 +5,8 @@ import { ErrorResponse, SuccessResponse } from '../util/response'
 import { UserRepository } from '../repository/authRepository'
 import { SignupInput, LoginInput } from '../models/dto/LoginInput'
 import { AppValidationError } from '../util/errors'
-
-import admin from '../config/firebase'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import auth from 'app/config/firebase'
 
 @autoInjectable()
 export class UserService {
@@ -28,11 +28,14 @@ export class UserService {
       const error = await AppValidationError(input)
       if (error) return ErrorResponse(404, error)
 
-       await admin.auth().createUser({
-        email: input.email,
-        password: input.password,
-      })
+      await createUserWithEmailAndPassword(auth, input.email, input.password)
 
+      // const userCredential = await createUserWithEmailAndPassword(auth, input.email, input.password)
+
+      // Handle user data
+      //const user = userCredential.user;
+
+     // Save user data to your database using UserRepository
       // const data = await this.repository.createAccount({
       //   email: input.email,
       //   firebaseUid: userRecord.uid,
@@ -40,11 +43,19 @@ export class UserService {
 
       return SuccessResponse({
         message: 'User created successfully.',
-        // userData: data,
+        // userData: user, (user data from database)
       })
     } catch (error) {
-      console.log(error)
-      return ErrorResponse(500, error)
+      const errorCode = error.code
+      const errorMessage = error.message
+
+      if (errorCode === 'auth/weak-password') {
+        return ErrorResponse(400, 'Password is too weak.');
+      } else if (errorCode === 'auth/email-already-in-use') {
+        return ErrorResponse(400, 'Email already in use.');
+      } else {
+        return ErrorResponse(500, errorMessage);
+      }
     }
   }
 
@@ -55,67 +66,79 @@ export class UserService {
       const error = await AppValidationError(input)
       if (error) return ErrorResponse(404, error)
 
-      const userRecord = await admin.auth().getUserByEmail(input.email)
+      await signInWithEmailAndPassword(auth, input.email, input.password)
+
+      // const userRecord = await signInWithEmailAndPassword(auth, input.email, input.password)
+
+      // Handle user data
+      // const user = userCredential.user;
 
       // Retrieve additional user data from the database
       // const userData = await this.repository.findAccount(input.email);
 
       return SuccessResponse({
-        email: userRecord.email,
-        // userData,
+        message: 'Login successful.',
+        // userData: ... (user data from database)
       })
     } catch (error) {
-      return ErrorResponse(500, error)
+      const errorCode = error.code;
+      const errorMessage = error.message;
+
+      if (errorCode === 'auth/wrong-password' || errorCode === 'auth/user-not-found'){
+        return ErrorResponse(401, 'Invalid email or password');
+      } else {
+        return ErrorResponse(500, errorMessage);
+      }
     }
   }
 
-  async ResetPassword(event: APIGatewayProxyEventV2) {
-    try {
-      const input = plainToClass(LoginInput, event.body)
-      const error = await AppValidationError(input)
-      if (error) return ErrorResponse(404, error)
+  // async ResetPassword(event: APIGatewayProxyEventV2) {
+  //   try {
+  //     const input = plainToClass(LoginInput, event.body)
+  //     const error = await AppValidationError(input)
+  //     if (error) return ErrorResponse(404, error)
 
-      await admin.auth().generatePasswordResetLink(input.email)
+  //     await admin.auth().generatePasswordResetLink(input.email)
 
-      return SuccessResponse({
-        message: 'Password reset email sent successfully',
-      })
-    } catch (error) {
-      console.error('Error sending password reset email:', error)
-      return ErrorResponse(500, error)
-    }
-  }
+  //     return SuccessResponse({
+  //       message: 'Password reset email sent successfully',
+  //     })
+  //   } catch (error) {
+  //     console.error('Error sending password reset email:', error)
+  //     return ErrorResponse(500, error)
+  //   }
+  // }
 
-  async ValidateToken(event: APIGatewayProxyEventV2) {
-    try {
-      const { token } = JSON.parse(event.body || '{}')
-      if (!token) return ErrorResponse(400, 'Token is required')
+  // async ValidateToken(event: APIGatewayProxyEventV2) {
+  //   try {
+  //     const { token } = JSON.parse(event.body || '{}')
+  //     if (!token) return ErrorResponse(400, 'Token is required')
 
-      const decodedToken = await admin.auth().verifyIdToken(token)
+  //     const decodedToken = await admin.auth().verifyIdToken(token)
 
-      return SuccessResponse({
-        message: 'Token was validated successfully.',
-        uid: decodedToken.uid,
-      })
-    } catch (error) {
-      console.error('Error validating token:', error)
-      return ErrorResponse(500, error)
-    }
-  }
+  //     return SuccessResponse({
+  //       message: 'Token was validated successfully.',
+  //       uid: decodedToken.uid,
+  //     })
+  //   } catch (error) {
+  //     console.error('Error validating token:', error)
+  //     return ErrorResponse(500, error)
+  //   }
+  // }
 
-  async LogoutUser(event: APIGatewayProxyEventV2) {
-    try {
-      const { uid } = JSON.parse(event.body || '{}')
-      if (!uid) return ErrorResponse(400, 'User ID is required')
+  // async LogoutUser(event: APIGatewayProxyEventV2) {
+  //   try {
+  //     const { uid } = JSON.parse(event.body || '{}')
+  //     if (!uid) return ErrorResponse(400, 'User ID is required')
 
-      await admin.auth().revokeRefreshTokens(uid)
+  //     await admin.auth().revokeRefreshTokens(uid)
 
-      return SuccessResponse({
-        message: 'User was successfully logged out.',
-      })
-    } catch (error) {
-      console.error('Error logging out user:', error)
-      return ErrorResponse(500, error)
-    }
-  }
+  //     return SuccessResponse({
+  //       message: 'User was successfully logged out.',
+  //     })
+  //   } catch (error) {
+  //     console.error('Error logging out user:', error)
+  //     return ErrorResponse(500, error)
+  //   }
+  // }
 }

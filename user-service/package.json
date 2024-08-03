@@ -39,7 +39,6 @@
     "dayjs": "^1.11.12",
     "dotenv": "^16.4.5",
     "firebase": "^10.12.5",
-    "firebase-admin": "^12.2.0",
     "prisma": "^5.17.0",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.8.0"
