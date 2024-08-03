@@ -1,120 +1,139 @@
-service: user-service
-frameworkVersion: '3'
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: vasaa
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: user-service
 
-useDotenv: true
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: dev
 
 provider:
   name: aws
-  runtime: nodejs16.x
-  versionFunctions: false
-  stage: 'dev'
+  runtime: nodejs20.x
   region: eu-central-1
-  httpApi:
-    cors: true
-
-custom:
-  stage: 'dev'
-  serverless-offline:
-    httpPort: 4000
-    lambdaPort: 4002
 
 functions:
   # User Section
   signup:
     handler: app/handler.SignUp
+    timeout: 30
     events:
       - httpApi:
           path: /signup
           method: post
+
   login:
     handler: app/handler.Login
+    timeout: 30
     events:
       - httpApi:
           path: /login
           method: post
-  verify:
-    handler: app/handler.Verify
+
+  logout:
+    handler: app/handler.Logout
+    timeout: 30
     events:
       - httpApi:
-          path: /verify
-          method: post
-  get-verification-code:
-    handler: app/handler.GetVerificationCode
-    events:
-      - httpApi:
-          path: /verify
-          method: get
-  # DONE
-  # Cart Section
-  create-cart:
-    handler: app/handler.CreateCart
-    timeout: 20
-    events:
-      - httpApi:
-          path: /cart
-          method: post
-  edit-cart:
-    handler: app/handler.EditCart
-    timeout: 20
-    events:
-      - httpApi:
-          path: /cart/{id}
-          method: put
-  get-cart:
-    handler: app/handler.GetCart
-    timeout: 20
-    events:
-      - httpApi:
-          path: /cart
-          method: get
-  delete-cart:
-    handler: app/handler.DeleteCart
-    timeout: 20
-    events:
-      - httpApi:
-          path: /cart/{id}
-          method: delete
-  collect-payment:
-    handler: app/handler.CollectPayment
-    timeout: 20
-    events:
-      - httpApi:
-          path: /collect-payment
+          path: /logout
           method: post
 
-  place-order:
-    handler: app/handler.PlaceOrder
-    timeout: 20
+  resetPassword:
+    handler: app/handler.ResetPassword
+    timeout: 30
     events:
       - httpApi:
-          path: /order
+          path: /passreset
           method: post
 
-  joinSellerProgram:
-    handler: app/handler.JoinSellerProgram
+  validateToken:
+    handler: app/handler.ValidateToken
+    timeout: 30
     events:
       - httpApi:
-          path: /join
-          method: post
-
-  getPaymentMethod:
-    handler: app/handler.GetPaymentMethods
-    events:
-      - httpApi:
-          path: /payment-methods
+          path: /validate
           method: get
 
-  editPaymentMethod:
-    handler: app/handler.EditPaymentMethods
-    events:
-      - httpApi:
-          path: /payment-methods/{id}
-          method: put
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    external:
+      - '@aws-sdk/client-s3'
+    exclude:
+      - '@aws-sdk/*'
+      - '!@aws-sdk/client-bedrock-runtime'
+    packages: external
+    buildConcurrency: 3
+    sourcemap:
+      type: linked
+      setNodeOptions: true
+
+  # # Cart Section
+  # create-cart:
+  #   handler: app/handler.CreateCart
+  #   events:
+  #     - httpApi:
+  #         path: /cart
+  #         method: post
+
+  # edit-cart:
+  #   handler: app/handler.EditCart
+  #   events:
+  #     - httpApi:
+  #         path: /cart/{id}
+  #         method: put
+
+  # get-cart:
+  #   handler: app/handler.GetCart
+  #   events:
+  #     - httpApi:
+  #         path: /cart
+  #         method: get
+
+  # delete-cart:
+  #   handler: app/handler.DeleteCart
+  #   events:
+  #     - httpApi:
+  #         path: /cart/{id}
+  #         method: delete
+
+  # collect-payment:
+  #   handler: app/handler.CollectPayment
+  #   events:
+  #     - httpApi:
+  #         path: /collect-payment
+  #         method: post
+
+  # place-order:
+  #   handler: app/handler.PlaceOrder
+  #   events:
+  #     - httpApi:
+  #         path: /order
+  #         method: post
+
+  # joinSellerProgram:
+  #   handler: app/handler.JoinSellerProgram
+  #   events:
+  #     - httpApi:
+  #         path: /join
+  #         method: post
+
+  # getPaymentMethod:
+  #   handler: app/handler.GetPaymentMethods
+  #   events:
+  #     - httpApi:
+  #         path: /payment-methods
+  #         method: get
+
+  # editPaymentMethod:
+  #   handler: app/handler.EditPaymentMethods
+  #   events:
+  #     - httpApi:
+  #         path: /payment-methods/{id}
+  #         method: put
 
 plugins:
-  - serverless-offline
-  - serverless-plugin-typescript
-  - serverless-plugin-optimize
+- serverless-offline
 
 package:
   individually: true

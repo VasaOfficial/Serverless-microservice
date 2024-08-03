@@ -12,6 +12,7 @@ terraform.tfvars
 # Build directories
 dist/
 build/
+.serverless/
 
 # Node modules
 node_modules/
