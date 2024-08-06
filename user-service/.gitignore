@@ -32,3 +32,6 @@ Thumbs.db
 .vscode/
 
 test.yml
+
+serviceAccountKey.json
+docker-compose.yml

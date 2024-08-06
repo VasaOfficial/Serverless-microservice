@@ -5,7 +5,6 @@ import { ErrorResponse, SuccessResponse } from '../util/response'
 import { UserRepository } from '../repository/authRepository'
 import { SignupInput, LoginInput } from '../models/dto/LoginInput'
 import { AppValidationError } from '../util/errors'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import auth from 'app/config/firebase'
 
 @autoInjectable()
@@ -28,22 +27,15 @@ export class UserService {
       const error = await AppValidationError(input)
       if (error) return ErrorResponse(404, error)
 
-      await createUserWithEmailAndPassword(auth, input.email, input.password)
-
-      // const userCredential = await createUserWithEmailAndPassword(auth, input.email, input.password)
-
-      // Handle user data
-      //const user = userCredential.user;
-
-     // Save user data to your database using UserRepository
-      // const data = await this.repository.createAccount({
-      //   email: input.email,
-      //   firebaseUid: userRecord.uid,
-      // });
+      // Save user data to your database using UserRepository
+      const data = await this.repository.createAccount({
+        email: input.email,
+        firebaseUid: input.uid,
+      });
 
       return SuccessResponse({
         message: 'User created successfully.',
-        // userData: user, (user data from database)
+        userData: data
       })
     } catch (error) {
       const errorCode = error.code
@@ -66,19 +58,24 @@ export class UserService {
       const error = await AppValidationError(input)
       if (error) return ErrorResponse(404, error)
 
-      await signInWithEmailAndPassword(auth, input.email, input.password)
+      const token = event.headers.Authorization?.split(' ')[1];
+      if (!token) {
+        return ErrorResponse(401, 'Unauthorized');
+      }
 
-      // const userRecord = await signInWithEmailAndPassword(auth, input.email, input.password)
+      // Verify Firebase token
+      const decodedToken = await auth.verifyIdToken(token);
+      const { uid } = decodedToken;
 
-      // Handle user data
-      // const user = userCredential.user;
-
-      // Retrieve additional user data from the database
-      // const userData = await this.repository.findAccount(input.email);
+      // Retrieve user data from the database
+      const user = await this.repository.findUserByUid(uid, input.email);
+      if (!user) {
+        return ErrorResponse(404, 'User not found');
+      }
 
       return SuccessResponse({
         message: 'Login successful.',
-        // userData: ... (user data from database)
+        userData: user
       })
     } catch (error) {
       const errorCode = error.code;
@@ -92,13 +89,31 @@ export class UserService {
     }
   }
 
+  // async LogoutUser(event: APIGatewayProxyEventV2) {
+  //   try {
+  //     const { uid } = JSON.parse(event.body || '{}')
+  //     if (!uid) return ErrorResponse(400, 'User ID is required')
+
+  //     // Sign out user using Firebase
+  //     await signOut(auth);
+
+  //     return SuccessResponse({
+  //       message: 'User was successfully logged out.',
+  //     })
+  //   } catch (error) {
+  //     console.error('Error logging out user:', error)
+  //     return ErrorResponse(500, error)
+  //   }
+  // }
+
   // async ResetPassword(event: APIGatewayProxyEventV2) {
   //   try {
-  //     const input = plainToClass(LoginInput, event.body)
+  //     const parsedBody = JSON.parse(event.body || '{}')
+  //     const input = plainToClass(PasswordResetInput, parsedBody)
   //     const error = await AppValidationError(input)
   //     if (error) return ErrorResponse(404, error)
 
-  //     await admin.auth().generatePasswordResetLink(input.email)
+  //     await sendPasswordResetEmail(auth, input.email);
 
   //     return SuccessResponse({
   //       message: 'Password reset email sent successfully',
@@ -114,7 +129,7 @@ export class UserService {
   //     const { token } = JSON.parse(event.body || '{}')
   //     if (!token) return ErrorResponse(400, 'Token is required')
 
-  //     const decodedToken = await admin.auth().verifyIdToken(token)
+  //     const token = await getIdToken(user);
 
   //     return SuccessResponse({
   //       message: 'Token was validated successfully.',
@@ -126,18 +141,36 @@ export class UserService {
   //   }
   // }
 
-  // async LogoutUser(event: APIGatewayProxyEventV2) {
+  // async SignUpWithGoogle(event: APIGatewayProxyEventV2) {
   //   try {
-  //     const { uid } = JSON.parse(event.body || '{}')
-  //     if (!uid) return ErrorResponse(400, 'User ID is required')
+  //     const { token } = JSON.parse(event.body || '{}')
+  //     if (!token) return ErrorResponse(400, 'Token is required')
 
-  //     await admin.auth().revokeRefreshTokens(uid)
+  //     const token = await getIdToken(user);
 
   //     return SuccessResponse({
-  //       message: 'User was successfully logged out.',
+  //       message: 'Token was validated successfully.',
+  //       uid: decodedToken.uid,
   //     })
   //   } catch (error) {
-  //     console.error('Error logging out user:', error)
+  //     console.error('Error validating token:', error)
+  //     return ErrorResponse(500, error)
+  //   }
+  // }
+
+  // async SignUpWithGithub(event: APIGatewayProxyEventV2) {
+  //   try {
+  //     const { token } = JSON.parse(event.body || '{}')
+  //     if (!token) return ErrorResponse(400, 'Token is required')
+
+  //     const token = await getIdToken(user);
+
+  //     return SuccessResponse({
+  //       message: 'Token was validated successfully.',
+  //       uid: decodedToken.uid,
+  //     })
+  //   } catch (error) {
+  //     console.error('Error validating token:', error)
   //     return ErrorResponse(500, error)
   //   }
   // }

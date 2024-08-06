@@ -11,8 +11,21 @@ provider:
   runtime: nodejs20.x
   region: eu-central-1
 
+cors:
+  origins:
+    - http://localhost:3000
+  headers:
+    - 'Content-Type'
+    - 'X-Custom-Header'
+    - 'Access-Control-Allow-Origin'
+  allowCredentials: true
+  methods:
+    - GET
+    - POST
+    - OPTIONS
+
 functions:
-  # User Section
+  #User Section
   signup:
     handler: app/handler.SignUp
     timeout: 30

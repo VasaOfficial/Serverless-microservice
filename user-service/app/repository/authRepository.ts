@@ -9,8 +9,8 @@ export class UserRepository {
     try {
       const newUser = await prisma.user.create({
         data: {
-          email,
-          firebaseUid,
+          email: email,
+          firebaseUid: firebaseUid,
         },
       })
       return newUser
@@ -22,12 +22,13 @@ export class UserRepository {
     }
   }
 
-  async findAccount(email: string) {
+  async findUserByUid(uid: string, email: string) {
     try {
       const user = await prisma.user.findUnique({
         where: {
-          email,
-        },
+          email: email,
+          firebaseUid: uid,
+        }
       })
       return user
     } catch (error) {

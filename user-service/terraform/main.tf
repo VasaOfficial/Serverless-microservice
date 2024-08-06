@@ -50,13 +50,13 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
 }
 
 // S3 bucket for Lambda code
-resource "aws_s3_bucket" "user-service-s3-bucket" {
-  bucket = "user-service-s3-bucket"
+resource "aws_s3_bucket" "user_service_s3_bucket" {
+  bucket = "user_service_s3_bucket"
   force_destroy = true
 }
 
 resource "aws_s3_bucket_public_access_block" "lambda_bucket" {
-  bucket = aws_s3_bucket.user-service-s3-bucket.id
+  bucket = aws_s3_bucket.user_service_s3_bucket.id
 
   block_public_acls   = true
   block_public_policy = true
@@ -66,7 +66,7 @@ resource "aws_s3_bucket_public_access_block" "lambda_bucket" {
 
 # Declare the S3 object for the Lambda function code
 resource "aws_s3_object" "lambda_function_code" {
-  bucket = aws_s3_bucket.user-service-s3-bucket.bucket
+  bucket = aws_s3_bucket.user_service_s3_bucket.bucket
   key    = "lambda-build.zip"
   source = "${path.root}/../lambda-build.zip"
 }
@@ -75,7 +75,7 @@ resource "aws_s3_object" "lambda_function_code" {
 resource "aws_lambda_function" "signup_function" {
   function_name    = "signup"
 
-  s3_bucket        = aws_s3_bucket.user-service-s3-bucket.id
+  s3_bucket        = aws_s3_bucket.user_service_s3_bucket.id
   s3_key           = aws_s3_object.lambda_function_code.key
 
   role             = aws_iam_role.lambda_exec_role.arn
@@ -106,7 +106,7 @@ resource "aws_lambda_function" "signup_function" {
 resource "aws_lambda_function" "login_function" {
   function_name    = "login"
 
-  s3_bucket        = aws_s3_bucket.user-service-s3-bucket.id
+  s3_bucket        = aws_s3_bucket.user_service_s3_bucket.id
   s3_key           = aws_s3_object.lambda_function_code.key
 
   role             = aws_iam_role.lambda_exec_role.arn
@@ -137,7 +137,7 @@ resource "aws_lambda_function" "login_function" {
 resource "aws_lambda_function" "resetpass_function" {
   function_name    = "resetpass"
 
-  s3_bucket        = aws_s3_bucket.user-service-s3-bucket.id
+  s3_bucket        = aws_s3_bucket.user_service_s3_bucket.id
   s3_key           = aws_s3_object.lambda_function_code.key
 
   role             = aws_iam_role.lambda_exec_role.arn
@@ -167,7 +167,7 @@ resource "aws_lambda_function" "resetpass_function" {
 
 // api gateway
 resource "aws_apigatewayv2_api" "http_api" {
-  name          = "user-service-api"
+  name          = "user_service_api"
   protocol_type = "HTTP"
 }
 

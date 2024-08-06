@@ -3,7 +3,10 @@ const formatResponse = (statusCode: number, message: string, data: unknown) => {
     return {
       statusCode,
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'localhost',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         message,
@@ -14,7 +17,10 @@ const formatResponse = (statusCode: number, message: string, data: unknown) => {
   return {
     statusCode,
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': 'localhost',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       message,
