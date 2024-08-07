@@ -18,6 +18,7 @@ cors:
     - 'Content-Type'
     - 'X-Custom-Header'
     - 'Access-Control-Allow-Origin'
+    - 'Authorization'
   allowCredentials: true
   methods:
     - GET
@@ -34,21 +35,13 @@ functions:
           path: /signup
           method: post
 
-  login:
-    handler: app/handler.Login
+  validateToken:
+    handler: app/handler.ValidateToken
     timeout: 30
     events:
       - httpApi:
-          path: /login
+          path: /validate
           method: post
-
-  # logout:
-  #   handler: app/handler.Logout
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /logout
-  #         method: post
 
   # resetPassword:
   #   handler: app/handler.ResetPassword
@@ -58,13 +51,6 @@ functions:
   #         path: /passreset
   #         method: post
 
-  # validateToken:
-  #   handler: app/handler.ValidateToken
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /validate
-  #         method: get
 
 build:
   esbuild:

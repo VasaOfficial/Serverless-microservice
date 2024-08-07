@@ -22,11 +22,10 @@ export class UserRepository {
     }
   }
 
-  async findUserByUid(uid: string, email: string) {
+  async findUserByUid(uid: string) {
     try {
       const user = await prisma.user.findUnique({
         where: {
-          email: email,
           firebaseUid: uid,
         }
       })

@@ -3,7 +3,7 @@ import { autoInjectable } from 'tsyringe'
 import { plainToClass } from 'class-transformer'
 import { ErrorResponse, SuccessResponse } from '../util/response'
 import { UserRepository } from '../repository/authRepository'
-import { SignupInput, LoginInput } from '../models/dto/LoginInput'
+import { SignupInput } from '../models/dto/LoginInput'
 import { AppValidationError } from '../util/errors'
 import auth from 'app/config/firebase'
 
@@ -19,7 +19,6 @@ export class UserService {
     return ErrorResponse(404, 'requested method is not supported!')
   }
 
-  // User Creation, Login and Verification
   async CreateUser(event: APIGatewayProxyEventV2) {
     try {
       const parsedBody = JSON.parse(event.body || '{}')
@@ -51,14 +50,15 @@ export class UserService {
     }
   }
 
-  async LoginUser(event: APIGatewayProxyEventV2) {
+  async TokenVerification(event: APIGatewayProxyEventV2) {
     try {
-      const parsedBody = JSON.parse(event.body || '{}')
-      const input = plainToClass(LoginInput, parsedBody)
-      const error = await AppValidationError(input)
-      if (error) return ErrorResponse(404, error)
+      const authHeader = event.headers.authorization
+      if (!authHeader) {
+        return ErrorResponse(401, 'Unauthorized');
+      }
 
-      const token = event.headers.Authorization?.split(' ')[1];
+      // Extract the token from the Authorization header
+      const token = authHeader.split(' ')[1];
       if (!token) {
         return ErrorResponse(401, 'Unauthorized');
       }
@@ -68,43 +68,32 @@ export class UserService {
       const { uid } = decodedToken;
 
       // Retrieve user data from the database
-      const user = await this.repository.findUserByUid(uid, input.email);
+      const user = await this.repository.findUserByUid(uid);
       if (!user) {
         return ErrorResponse(404, 'User not found');
       }
 
       return SuccessResponse({
-        message: 'Login successful.',
+        message: 'Verification successful.',
         userData: user
       })
     } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
 
-      if (errorCode === 'auth/wrong-password' || errorCode === 'auth/user-not-found'){
-        return ErrorResponse(401, 'Invalid email or password');
+      if (error.code === 'auth/argument-error') {
+          return ErrorResponse(400, 'Invalid token');
+      } else if (error.code === 'auth/id-token-expired') {
+          return ErrorResponse(401, 'Token expired');
+      } else if (error.code === 'auth/id-token-revoked') {
+          return ErrorResponse(401, 'Token revoked');
+      } else if (error.code === 'auth/invalid-id-token') {
+          return ErrorResponse(401, 'Invalid ID token');
+      } else if (error.code === 'auth/user-not-found') {
+          return ErrorResponse(404, 'User not found');
       } else {
-        return ErrorResponse(500, errorMessage);
+          return ErrorResponse(500, error.message || 'Internal server error');
       }
     }
   }
-
-  // async LogoutUser(event: APIGatewayProxyEventV2) {
-  //   try {
-  //     const { uid } = JSON.parse(event.body || '{}')
-  //     if (!uid) return ErrorResponse(400, 'User ID is required')
-
-  //     // Sign out user using Firebase
-  //     await signOut(auth);
-
-  //     return SuccessResponse({
-  //       message: 'User was successfully logged out.',
-  //     })
-  //   } catch (error) {
-  //     console.error('Error logging out user:', error)
-  //     return ErrorResponse(500, error)
-  //   }
-  // }
 
   // async ResetPassword(event: APIGatewayProxyEventV2) {
   //   try {
@@ -120,23 +109,6 @@ export class UserService {
   //     })
   //   } catch (error) {
   //     console.error('Error sending password reset email:', error)
-  //     return ErrorResponse(500, error)
-  //   }
-  // }
-
-  // async ValidateToken(event: APIGatewayProxyEventV2) {
-  //   try {
-  //     const { token } = JSON.parse(event.body || '{}')
-  //     if (!token) return ErrorResponse(400, 'Token is required')
-
-  //     const token = await getIdToken(user);
-
-  //     return SuccessResponse({
-  //       message: 'Token was validated successfully.',
-  //       uid: decodedToken.uid,
-  //     })
-  //   } catch (error) {
-  //     console.error('Error validating token:', error)
   //     return ErrorResponse(500, error)
   //   }
   // }

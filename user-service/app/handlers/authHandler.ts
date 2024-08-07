@@ -8,18 +8,10 @@ export const SignUp = async (event: APIGatewayProxyEventV2) => {
   return service.CreateUser(event);
 };
 
-// export const Login = async (event: APIGatewayProxyEventV2) => {
-//   return service.LoginUser(event);
-// };
-
-// export const Logout = async (event: APIGatewayProxyEventV2) => {
-//   return service.LogoutUser(event);
-// };
+export const ValidateToken = async (event: APIGatewayProxyEventV2) => {
+  return service.TokenVerification(event);
+};
 
 // export const ResetPassword = async (event: APIGatewayProxyEventV2) => {
 //   return service.ResetPassword(event);
-// };
-
-// export const ValidateToken = async (event: APIGatewayProxyEventV2) => {
-//   return service.ValidateToken(event);
 // };
