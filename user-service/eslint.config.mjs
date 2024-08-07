@@ -6,8 +6,8 @@ import eslintConfigPrettier from 'eslint-config-prettier'
 export default [
   {
     ignores: [
-      "**/.*",
-      "**/.serverless/**",
+      '**/.*',
+      '**/.serverless/**',
       '.terraform/*',
       'terraform.tfstate',
       'terraform.tfstate.backup',
@@ -16,8 +16,8 @@ export default [
       'terraform.tfvars',
       '*.zip',
       'build/*',
-      "**/node_modules/",
-    ]
+      '**/node_modules/',
+    ],
   },
   { files: ['**/*.{js,mjs,cjs,ts}'] },
   { languageOptions: { globals: globals.node } },

@@ -27,7 +27,7 @@ export class UserRepository {
       const user = await prisma.user.findUnique({
         where: {
           firebaseUid: uid,
-        }
+        },
       })
       return user
     } catch (error) {

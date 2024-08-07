@@ -30,22 +30,22 @@ export class UserService {
       const data = await this.repository.createAccount({
         email: input.email,
         firebaseUid: input.uid,
-      });
+      })
 
       return SuccessResponse({
         message: 'User created successfully.',
-        userData: data
+        userData: data,
       })
     } catch (error) {
       const errorCode = error.code
       const errorMessage = error.message
 
       if (errorCode === 'auth/weak-password') {
-        return ErrorResponse(400, 'Password is too weak.');
+        return ErrorResponse(400, 'Password is too weak.')
       } else if (errorCode === 'auth/email-already-in-use') {
-        return ErrorResponse(400, 'Email already in use.');
+        return ErrorResponse(400, 'Email already in use.')
       } else {
-        return ErrorResponse(500, errorMessage);
+        return ErrorResponse(500, errorMessage)
       }
     }
   }
@@ -53,6 +53,50 @@ export class UserService {
   async TokenVerification(event: APIGatewayProxyEventV2) {
     try {
       const authHeader = event.headers.authorization
+      if (!authHeader) {
+        return ErrorResponse(401, 'Unauthorized')
+      }
+
+      // Extract the token from the Authorization header
+      const token = authHeader.split(' ')[1]
+      if (!token) {
+        return ErrorResponse(401, 'Unauthorized')
+      }
+
+      // Verify Firebase token
+      const decodedToken = await auth.verifyIdToken(token)
+      const { uid } = decodedToken
+
+      // Retrieve user data from the database
+      const user = await this.repository.findUserByUid(uid)
+      if (!user) {
+        return ErrorResponse(404, 'User not found')
+      }
+
+      return SuccessResponse({
+        message: 'Verification successful.',
+        userData: user,
+      })
+    } catch (error) {
+      if (error.code === 'auth/argument-error') {
+        return ErrorResponse(400, 'Invalid token')
+      } else if (error.code === 'auth/id-token-expired') {
+        return ErrorResponse(401, 'Token expired')
+      } else if (error.code === 'auth/id-token-revoked') {
+        return ErrorResponse(401, 'Token revoked')
+      } else if (error.code === 'auth/invalid-id-token') {
+        return ErrorResponse(401, 'Invalid ID token')
+      } else if (error.code === 'auth/user-not-found') {
+        return ErrorResponse(404, 'User not found')
+      } else {
+        return ErrorResponse(500, error.message || 'Internal server error')
+      }
+    }
+  }
+
+  async OAuthentication(event: APIGatewayProxyEventV2) {
+    try {
+      const authHeader = event.headers.authorization;
       if (!authHeader) {
         return ErrorResponse(401, 'Unauthorized');
       }
@@ -67,83 +111,33 @@ export class UserService {
       const decodedToken = await auth.verifyIdToken(token);
       const { uid } = decodedToken;
 
-      // Retrieve user data from the database
+      console.log("all good")
+      // Check if the user exists in the database
       const user = await this.repository.findUserByUid(uid);
-      if (!user) {
-        return ErrorResponse(404, 'User not found');
-      }
+      console.log("all good 2")
 
-      return SuccessResponse({
-        message: 'Verification successful.',
-        userData: user
-      })
-    } catch (error) {
-
-      if (error.code === 'auth/argument-error') {
-          return ErrorResponse(400, 'Invalid token');
-      } else if (error.code === 'auth/id-token-expired') {
-          return ErrorResponse(401, 'Token expired');
-      } else if (error.code === 'auth/id-token-revoked') {
-          return ErrorResponse(401, 'Token revoked');
-      } else if (error.code === 'auth/invalid-id-token') {
-          return ErrorResponse(401, 'Invalid ID token');
-      } else if (error.code === 'auth/user-not-found') {
-          return ErrorResponse(404, 'User not found');
+      if (user) {
+        // User exists, validate the token
+        console.log("all good 3")
+        return await this.TokenVerification(event);
       } else {
-          return ErrorResponse(500, error.message || 'Internal server error');
+        console.log("all good 4")
+        return await this.CreateUser(event);
+      }
+    } catch (error) {
+      if (error.code === 'auth/argument-error') {
+        return ErrorResponse(400, 'Invalid token');
+      } else if (error.code === 'auth/id-token-expired') {
+        return ErrorResponse(401, 'Token expired');
+      } else if (error.code === 'auth/id-token-revoked') {
+        return ErrorResponse(401, 'Token revoked');
+      } else if (error.code === 'auth/invalid-id-token') {
+        return ErrorResponse(401, 'Invalid ID token');
+      } else if (error.code === 'auth/user-not-found') {
+        return ErrorResponse(404, 'User not found');
+      } else {
+        return ErrorResponse(500, error.message || 'Internal server error');
       }
     }
   }
-
-  // async ResetPassword(event: APIGatewayProxyEventV2) {
-  //   try {
-  //     const parsedBody = JSON.parse(event.body || '{}')
-  //     const input = plainToClass(PasswordResetInput, parsedBody)
-  //     const error = await AppValidationError(input)
-  //     if (error) return ErrorResponse(404, error)
-
-  //     await sendPasswordResetEmail(auth, input.email);
-
-  //     return SuccessResponse({
-  //       message: 'Password reset email sent successfully',
-  //     })
-  //   } catch (error) {
-  //     console.error('Error sending password reset email:', error)
-  //     return ErrorResponse(500, error)
-  //   }
-  // }
-
-  // async SignUpWithGoogle(event: APIGatewayProxyEventV2) {
-  //   try {
-  //     const { token } = JSON.parse(event.body || '{}')
-  //     if (!token) return ErrorResponse(400, 'Token is required')
-
-  //     const token = await getIdToken(user);
-
-  //     return SuccessResponse({
-  //       message: 'Token was validated successfully.',
-  //       uid: decodedToken.uid,
-  //     })
-  //   } catch (error) {
-  //     console.error('Error validating token:', error)
-  //     return ErrorResponse(500, error)
-  //   }
-  // }
-
-  // async SignUpWithGithub(event: APIGatewayProxyEventV2) {
-  //   try {
-  //     const { token } = JSON.parse(event.body || '{}')
-  //     if (!token) return ErrorResponse(400, 'Token is required')
-
-  //     const token = await getIdToken(user);
-
-  //     return SuccessResponse({
-  //       message: 'Token was validated successfully.',
-  //       uid: decodedToken.uid,
-  //     })
-  //   } catch (error) {
-  //     console.error('Error validating token:', error)
-  //     return ErrorResponse(500, error)
-  //   }
-  // }
 }

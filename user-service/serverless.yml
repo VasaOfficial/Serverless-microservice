@@ -43,14 +43,13 @@ functions:
           path: /validate
           method: post
 
-  # resetPassword:
-  #   handler: app/handler.ResetPassword
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /passreset
-  #         method: post
-
+  oAuth:
+    handler: app/handler.OAuthentication
+    timeout: 30
+    events:
+      - httpApi:
+          path: /oauth
+          method: post
 
 build:
   esbuild:

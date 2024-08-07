@@ -11,5 +11,5 @@ export class SignupInput {
 
 export class PasswordResetInput {
   @IsEmail()
-  email: string;
+  email: string
 }
