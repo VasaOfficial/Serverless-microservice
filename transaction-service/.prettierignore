@@ -5,6 +5,7 @@ terraform.tfstate.backup
 *.tfstate
 *.tfstate.backup
 terraform.tfvars
+terraform
 
 # Zip files
 *.zip
@@ -12,7 +13,6 @@ terraform.tfvars
 # Build directories
 dist/
 build/
-.serverless/
 
 # Node modules
 node_modules/
@@ -33,5 +33,5 @@ Thumbs.db
 
 test.yml
 
-serviceAccountKey.json
-docker-compose.yml
+package-lock.json
+package.json

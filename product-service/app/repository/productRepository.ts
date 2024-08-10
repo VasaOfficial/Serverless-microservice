@@ -1,66 +1,66 @@
-// import { ProductInput } from '../models/dto/product-input'
-// import { ProductDoc, products } from '../models'
+import { ProductInput } from 'app/models/dto/product-input'
+import { ProductDoc, products } from 'app/models'
 
-// export class ProductRepository {
-//   constructor() {}
+export class ProductRepository {
+  constructor() {}
 
-//   async createProduct({
-//     name,
-//     description,
-//     category_id,
-//     price,
-//     image_url,
-//     seller_id,
-//   }: ProductInput): Promise<ProductDoc> {
-//     return products.create({
-//       name,
-//       description,
-//       category_id,
-//       price,
-//       image_url,
-//       availability: true,
-//       seller_id,
-//     })
-//   }
+  async createProduct({
+    name,
+    description,
+    category_id,
+    price,
+    image_url,
+    seller_id,
+  }: ProductInput): Promise<ProductDoc> {
+    return products.create({
+      name,
+      description,
+      category_id,
+      price,
+      image_url,
+      availability: true,
+      seller_id,
+    })
+  }
 
-//   // pagination
-//   async getAllProducts(offset = 0, pages?: number) {
-//     return products
-//       .find()
-//       .skip(offset)
-//       .limit(pages ? pages : 10)
-//   }
+  // pagination
+  async getAllProducts(offset = 0, pages?: number) {
+    return products
+      .find()
+      .skip(offset)
+      .limit(pages ? pages : 10)
+  }
 
-//   async getAllSellerProducts(seller_id: number) {
-//     return products.find({ seller_id: seller_id })
-//   }
+  async getAllSellerProducts(seller_id: number) {
+    return products.find({ seller_id: seller_id })
+  }
 
-//   async getProductById(id: string) {
-//     return (await products.findById(id)) as ProductDoc
-//   }
+  async getProductById(id: string) {
+    return (await products.findById(id)) as ProductDoc
+  }
 
-//   async updateProduct({
-//     id,
-//     name,
-//     description,
-//     price,
-//     category_id,
-//     image_url,
-//     availability,
-//   }: ProductInput) {
-//     let existingProduct = (await products.findById(id)) as ProductDoc
-//     existingProduct.name = name
-//     existingProduct.description = description
-//     existingProduct.price = price
-//     existingProduct.category_id = category_id
-//     existingProduct.image_url = image_url
-//     existingProduct.availability = availability
-//     return existingProduct.save()
-//   }
+  async updateProduct({
+    id,
+    name,
+    description,
+    price,
+    category_id,
+    image_url,
+    availability,
+  }: ProductInput) {
+    const existingProduct = (await products.findById(id)) as ProductDoc
+    existingProduct.name = name
+    existingProduct.description = description
+    existingProduct.price = price
+    existingProduct.category_id = category_id
+    existingProduct.image_url = image_url
+    existingProduct.availability = availability
+    return existingProduct.save()
+  }
 
-//   async deleteProduct(id: string) {
-//     const { category_id } = (await products.findById(id)) as ProductDoc
-//     const deleteResult = await products.deleteOne({ _id: id })
-//     return { category_id, deleteResult }
-//   }
-// }
+  async deleteProduct(id: string) {
+    const { category_id } = (await products.findById(id)) as ProductDoc
+    const deleteResult = await products.deleteOne({ _id: id })
+    return { category_id, deleteResult }
+  }
+}

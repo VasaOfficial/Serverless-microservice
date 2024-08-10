@@ -1,0 +1,62 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: vasaa
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: user-service
+
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: dev
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: eu-central-1
+
+cors:
+  origins:
+    - http://localhost:3000
+  headers:
+    - 'Content-Type'
+    - 'X-Custom-Header'
+    - 'Access-Control-Allow-Origin'
+    - 'Authorization'
+  allowCredentials: true
+  methods:
+    - GET
+    - POST
+    - OPTIONS
+
+functions:
+  # Product Section
+  getProducts:
+    handler: app/handler.GetProducts
+    timeout: 30
+    events:
+      - httpApi:
+          path: /shop/products
+          method: get
+
+  getProduct:
+    handler: app/handler.GetProduct
+    timeout: 30
+    events:
+      - httpApi:
+          path: /shop/product/{id}
+          method: get
+
+build:
+  esbuild:
+    bundle: true
+    minify: false
+    external:
+      - '@aws-sdk/client-s3'
+    exclude:
+      - '@aws-sdk/*'
+      - '!@aws-sdk/client-bedrock-runtime'
+    packages: external
+    buildConcurrency: 3
+    sourcemap:
+      type: linked
+      setNodeOptions: true
+
+package:
+  individually: true

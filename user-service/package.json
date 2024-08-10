@@ -4,7 +4,7 @@
   "description": "",
   "main": "handler.js",
   "scripts": {
-    "test": "serverless dev",
+    "dev": "serverless dev",
     "build": "npx tsc",
     "format": "npx prettier . --write",
     "lint": "eslint .",
