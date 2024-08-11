@@ -11,3 +11,7 @@ export const GetProducts = async (event: APIGatewayProxyEventV2) => {
 export const GetProduct = async (event: APIGatewayProxyEventV2) => {
   return service.GetProduct(event)
 }
+
+// export const getTopOffers = async (event: APIGatewayProxyEventV2) => {
+//   return service.getTopOffers(event)
+// }
