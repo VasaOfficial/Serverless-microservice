@@ -27,29 +27,43 @@ cors:
 
 functions:
   # Product Section
-  getProducts:
-    handler: app/handler.GetProducts
-    timeout: 30
-    events:
-      - httpApi:
-          path: /shop/products
-          method: get
-
-  getProduct:
-    handler: app/handler.GetProduct
-    timeout: 30
-    events:
-      - httpApi:
-          path: /shop/product/{id}
-          method: get
-
-  # getTopOffers:
-  #   handler: app/handler.GetTopOffers
+  # getProducts:
+  #   handler: app/handler.GetProducts
   #   timeout: 30
   #   events:
   #     - httpApi:
-  #         path: /shop/top-offers
+  #         path: /shop/products
   #         method: get
+
+  # getProduct:
+  #   handler: app/handler.GetProduct
+  #   timeout: 30
+  #   events:
+  #     - httpApi:
+  #         path: /shop/products/{id}
+  #         method: get
+
+  getTopOffers:
+    handler: app/handler.GetTopOffers
+    timeout: 30
+    events:
+      - httpApi:
+          path: /shop/top-offers
+          method: get
+
+  searchedProducts:
+    handler: app/handler.SearchProducts
+    timeout: 30
+    events:
+      - httpApi:
+          path: /shop/products/search
+          method: get
+          request:
+            parameters:
+              querystrings:
+                continents: true
+                date: false
+                price: false
 
 build:
   esbuild:

@@ -16,8 +16,8 @@
     "forceConsistentCasingInFileNames": true,
     "preserveConstEnums": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "emitDecoratorMetadata": true
   },
-  "include": ["app/**/*", "*.ts", "../uga.ts",],
+  "include": ["app/**/*", "*.ts", "../uga.ts"],
   "exclude": ["node_modules", "./.serverless/"]
 }

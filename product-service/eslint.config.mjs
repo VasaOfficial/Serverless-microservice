@@ -19,6 +19,7 @@ export default [
       '*.zip',
       'build/',
       'node_modules/',
+      '**/.serverless/**',
     ],
     rules: {
       'no-console': 'off',
