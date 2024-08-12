@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Continent {
+  id        Int       @id @default(autoincrement())
+  name      String
+  countries Country[]
+}
+
+model Country {
+  id           Int           @id @default(autoincrement())
+  name         String
+  continent    Continent     @relation(fields: [continentId], references: [id])
+  continentId  Int
+  destinations Destination[]
+}
+
+model Destination {
+  id           Int     @id @default(autoincrement())
+  countryName  String
+  country      Country @relation(fields: [countryId], references: [id])
+  countryId    Int
+  city         String  @db.VarChar(100)
+  price        Int
+  latitude     Float
+  longitude    Float
+  imageUrl     String  @db.VarChar(255)
+  dateRange    String
+  durationDays Int
+  description  String  @db.Text
+  tripRoute    String  @db.Text
+  travelPlans  Json
+  includedIn   String  @db.Text
+}
+
+model TopOffers {
+  id               Int    @id @default(autoincrement())
+  countryName      String
+  city             String @db.VarChar(100)
+  price            Int
+  imageUrl         String @db.VarChar(255)
+  shortDescription String @db.Text
+  description      String @db.Text
+  durationDays     Int
+  tripRoute        String @db.Text
+  travelPlans      Json
+  includedIn       String @db.Text
+  dateRange        String
+}
