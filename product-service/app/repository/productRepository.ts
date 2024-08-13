@@ -22,7 +22,9 @@ export class ProductRepository {
 
   async searchProducts(filters: any) {
     return prisma.destination.findMany({
-      where: filters,
+      where: {
+        ...filters,
+      },
       include: {
         country: {
           include: {

@@ -1,8 +1,17 @@
 import { APIGatewayEvent, APIGatewayProxyEventV2 } from 'aws-lambda'
 import { ProductRepository } from 'app/repository/productRepository'
 import { ErrorResponse, SuccessResponse } from '../util/response'
-import { plainToClass } from 'class-transformer'
-import { AppValidationError } from '../util/errors'
+// import { plainToClass } from 'class-transformer'
+// import { AppValidationError } from '../util/errors'
+import { parse, isWithinInterval } from 'date-fns'
+
+function parseDateRange(dateRange: string) {
+  const [start, end] = dateRange.split(' - ')
+  return {
+    start: parse(start, 'MMM d', new Date()),
+    end: parse(end, 'MMM d', new Date()),
+  }
+}
 
 export class ProductService {
   _repository: ProductRepository
@@ -59,8 +68,34 @@ export class ProductService {
       }
     }
 
+    // Handle date filter
+    let startDate: Date | null = null
+    let endDate: Date | null = null
+
+    if (date) {
+      const [startDateStr, endDateStr] = date.split(':')
+      startDate = new Date(startDateStr)
+      endDate = new Date(endDateStr)
+    }
+
     try {
       const data = await this._repository.searchProducts(filters)
+
+      // If date range is provided filter the results in-memory
+      if (startDate && endDate) {
+        const filteredData = data.filter((product) => {
+          const { start, end } = parseDateRange(product.dateRange)
+          // Check if the destinations dateRange overlaps with the search date range
+          return (
+            isWithinInterval(startDate, { start, end }) ||
+            isWithinInterval(endDate, { start, end }) ||
+            (startDate < end && endDate > start)
+          ) // Additional overlap check
+        })
+
+        if (filteredData.length === 0) return ErrorResponse(404, 'No products found')
+        return SuccessResponse(filteredData)
+      }
 
       if (data.length === 0) return ErrorResponse(404, 'No products found')
       return SuccessResponse(data)

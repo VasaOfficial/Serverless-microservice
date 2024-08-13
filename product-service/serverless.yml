@@ -43,13 +43,13 @@ functions:
   #         path: /shop/products/{id}
   #         method: get
 
-  getTopOffers:
-    handler: app/handler.GetTopOffers
-    timeout: 30
-    events:
-      - httpApi:
-          path: /shop/top-offers
-          method: get
+  # getTopOffers:
+  #   handler: app/handler.GetTopOffers
+  #   timeout: 30
+  #   events:
+  #     - httpApi:
+  #         path: /shop/top-offers
+  #         method: get
 
   searchedProducts:
     handler: app/handler.SearchProducts
