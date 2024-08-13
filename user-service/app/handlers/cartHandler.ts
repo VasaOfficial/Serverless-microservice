@@ -1,6 +1,4 @@
 // import { APIGatewayProxyEventV2 } from "aws-lambda";
-// import middy from "@middy/core";
-// import bodyParser from "@middy/http-json-body-parser";
 // import { CartService } from "app/services/cartService";
 // import { CartRepository } from "./../repository/cartRepository";
 
@@ -21,3 +19,16 @@
 // export const GetCart = middy((event: APIGatewayProxyEventV2) => {
 //   return cartService.GetCart(event);
 // }).use(bodyParser());
+
+
+// export const SignUp = async (event: APIGatewayProxyEventV2) => {
+//   return service.CreateUser(event)
+// }
+
+// export const ValidateToken = async (event: APIGatewayProxyEventV2) => {
+//   return service.TokenVerification(event)
+// }
+
+// export const OAuthentication = async (event: APIGatewayProxyEventV2) => {
+//   return service.OAuthentication(event);
+// };

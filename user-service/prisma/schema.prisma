@@ -14,7 +14,28 @@ datasource db {
 }
 
 model User {
-  user_id     Int    @id @default(autoincrement())
-  firebaseUid String @unique
-  email       String @unique
+  user_id     Int        @id @default(autoincrement())
+  firebaseUid String     @unique
+  email       String     @unique
+  Favorite    Favorite[]
+  CartItem    CartItem[]
+}
+
+model Favorite {
+  id            Int      @id @default(autoincrement())
+  user          User     @relation(fields: [userId], references: [user_id])
+  userId        Int
+  destinationId Int
+  createdAt     DateTime @default(now())
+
+  @@unique([userId, destinationId])
+}
+
+model CartItem {
+  id            Int      @id @default(autoincrement())
+  user          User     @relation(fields: [userId], references: [user_id])
+  userId        Int
+  destinationId Int
+  quantity      Int      @default(1)
+  createdAt     DateTime @default(now())
 }

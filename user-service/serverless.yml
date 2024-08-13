@@ -27,37 +27,29 @@ cors:
 
 functions:
   #User Section
-  signup:
-    handler: app/handler.SignUp
-    timeout: 30
-    events:
-      - httpApi:
-          path: /user/signup
-          method: post
-
-  validateToken:
-    handler: app/handler.ValidateToken
-    timeout: 30
-    events:
-      - httpApi:
-          path: /user//validate
-          method: post
-
-  oAuth:
-    handler: app/handler.OAuthentication
-    timeout: 30
-    events:
-      - httpApi:
-          path: /user/oauth
-          method: post
-
-  # getUser:
-  #   handler: app/handler.GetUser
+  # signup:
+  #   handler: app/handler.SignUp
   #   timeout: 30
   #   events:
   #     - httpApi:
-  #         path: /user
-  #         method: get
+  #         path: /user/signup
+  #         method: post
+
+  # validateToken:
+  #   handler: app/handler.ValidateToken
+  #   timeout: 30
+  #   events:
+  #     - httpApi:
+  #         path: /user//validate
+  #         method: post
+
+  # oAuth:
+  #   handler: app/handler.OAuthentication
+  #   timeout: 30
+  #   events:
+  #     - httpApi:
+  #         path: /user/oauth
+  #         method: post
 
   # Favorites Section
 
