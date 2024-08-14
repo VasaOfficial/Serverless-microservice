@@ -49,25 +49,19 @@ export class UserService {
     }
   }
 
-  // async DeleteFavorites(event: APIGatewayProxyEventV2) {
-  //   const userId = event.requestContext.authorizer?.userId; // Assuming userId is passed via authorizer
-  //   const { destinationId } = JSON.parse(event.body || '{}');
+  async DeleteFavorites(event: APIGatewayProxyEventV2) {
+    try {
+      const { firebaseUid, destinationId } = JSON.parse(event.body || '{}')
 
-  //   if (!userId || !destinationId) {
-  //     return ErrorResponse(400, 'userId and destinationId are required');
-  //   }
+      if (!firebaseUid || !destinationId) {
+        return ErrorResponse(400, 'firebaseUid and destinationId are required')
+      }
 
-  //   // Check if the favorite exists
-  //   const existingFavorite = await this.repository.getFavorite(userId, destinationId);
+      const result = await this.repository.deleteFavorite(firebaseUid, destinationId)
 
-  //   if (!existingFavorite) {
-  //     return ErrorResponse(404, 'Favorite not found');
-  //   }
-
-  //   // Delete favorite
-  //   await this.repository.deleteFavorite(userId, destinationId);
-
-  //   return SuccessResponse({ message: 'Favorite deleted successfully' });
-  // }
-
+      return SuccessResponse(result)
+    } catch (error) {
+      return ErrorResponse(500, `Failed to remove favorite: ${error.message}`);
+    }
+  }
 }

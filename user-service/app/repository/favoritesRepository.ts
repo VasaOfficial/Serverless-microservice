@@ -78,19 +78,34 @@ export class UserRepository {
     }
   }
 
+  async deleteFavorite(firebaseUid: string, destinationId: number) {
+    try {
+      // Check if the favorite exists
+      const existingFavorite = await prisma.favorite.findUnique({
+        where: {
+          userId_destinationId: {
+            userId: firebaseUid,
+            destinationId: destinationId,
+          },
+        },
+      });
 
-  // async deleteFavorite(userId: number, destinationId: number) {
-  //   return this.prisma.favorite.deleteMany({
-  //     where: { userId, destinationId },
-  //   });
-  // }
+      if (!existingFavorite) {
+        throw new Error('Favorite does not exist');
+      }
 
-  // async getFavoritesByUserId(userId: number) {
-  //   return this.prisma.favorite.findMany({
-  //     where: { userId },
-  //     include: {
-  //       destination: true, // Assuming you want to include destination details
-  //     },
-  //   });
-  // }
+      // Delete the favorite
+      await prisma.favorite.delete({
+        where: {
+          id: existingFavorite.id,
+        },
+      });
+
+      return { message: 'Favorite removed successfully' };
+    } catch (error) {
+      throw new Error(`Failed to remove favorite: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
 }
