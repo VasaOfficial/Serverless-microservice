@@ -1,5 +1,5 @@
 import { APIGatewayProxyEventV2 } from 'aws-lambda'
-import { UserRepository } from 'app/repository/authRepository'
+import { UserRepository } from 'app/repository/favoritesRepository'
 import { UserService } from 'app/services/favoritesService'
 
 const service = new UserService(new UserRepository())
@@ -12,6 +12,6 @@ export const AddFavorites = async (event: APIGatewayProxyEventV2) => {
   return service.AddFavorites(event)
 }
 
-export const DeleteFavorites = async (event: APIGatewayProxyEventV2) => {
-  return service.DeleteFavorites(event);
-};
+// export const DeleteFavorites = async (event: APIGatewayProxyEventV2) => {
+//   return service.DeleteFavorites(event);
+// };

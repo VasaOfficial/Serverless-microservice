@@ -111,17 +111,13 @@ export class UserService {
       const decodedToken = await auth.verifyIdToken(token);
       const { uid } = decodedToken;
 
-      console.log("all good")
       // Check if the user exists in the database
       const user = await this.repository.findUserByUid(uid);
-      console.log("all good 2")
 
       if (user) {
         // User exists, validate the token
-        console.log("all good 3")
         return await this.TokenVerification(event);
       } else {
-        console.log("all good 4")
         return await this.CreateUser(event);
       }
     } catch (error) {

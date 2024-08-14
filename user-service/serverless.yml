@@ -11,36 +11,36 @@ provider:
   runtime: nodejs20.x
   region: eu-central-1
 
-cors:
-  origins:
-    - http://localhost:3000
-  headers:
-    - 'Content-Type'
-    - 'X-Custom-Header'
-    - 'Access-Control-Allow-Origin'
-    - 'Authorization'
-  allowCredentials: true
-  methods:
-    - GET
-    - POST
-    - OPTIONS
+# cors:
+#   origins:
+#     - http://localhost:3000
+#   headers:
+#     - 'Content-Type'
+#     - 'X-Custom-Header'
+#     - 'Access-Control-Allow-Origin'
+#     - 'Authorization'
+#   allowCredentials: true
+#   methods:
+#     - GET
+#     - POST
+#     - OPTIONS
 
 functions:
   #User Section
-  # signup:
-  #   handler: app/handler.SignUp
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /user/signup
-  #         method: post
+  signup:
+    handler: app/handler.SignUp
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/signup
+          method: post
 
   # validateToken:
   #   handler: app/handler.ValidateToken
   #   timeout: 30
   #   events:
   #     - httpApi:
-  #         path: /user//validate
+  #         path: /user/validate
   #         method: post
 
   # oAuth:
@@ -53,21 +53,21 @@ functions:
 
   # Favorites Section
 
-  # getFavorites:
-  #   handler: app/handler.GetFavorites
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /user/favorites
-  #         method: get
+  addFavorites:
+    handler: app/handler.AddFavorites
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/favorites
+          method: post
 
-  # addFavorites:
-  #   handler: app/handler.AddFavorites
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /user/favorites/{productId}
-  #         method: post
+  getFavorites:
+    handler: app/handler.GetFavorites
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/favorites
+          method: get
 
   # deleteFavorites:
   #   handler: app/handler.deleteFavorites

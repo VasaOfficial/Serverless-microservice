@@ -14,9 +14,11 @@ datasource db {
 }
 
 model User {
-  user_id     Int    @id @default(autoincrement())
-  firebaseUid String @unique
-  email       String @unique
+  user_id     Int        @id @default(autoincrement())
+  firebaseUid String     @unique
+  email       String     @unique
+  Favorite    Favorite[]
+  CartItem    CartItem[]
 }
 
 model Continent {
@@ -34,21 +36,23 @@ model Country {
 }
 
 model Destination {
-  id           Int     @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   countryName  String
-  country      Country @relation(fields: [countryId], references: [id])
+  country      Country    @relation(fields: [countryId], references: [id])
   countryId    Int
-  city         String  @db.VarChar(100)
+  city         String     @db.VarChar(100)
   price        Int
   latitude     Float
   longitude    Float
-  imageUrl     String  @db.VarChar(255)
+  imageUrl     String     @db.VarChar(255)
   dateRange    String
   durationDays Int
-  description  String  @db.Text
-  tripRoute    String  @db.Text
+  description  String     @db.Text
+  tripRoute    String     @db.Text
   travelPlans  Json
-  includedIn   String  @db.Text
+  includedIn   String     @db.Text
+  Favorites    Favorite[]
+  CartItems    CartItem[]
 }
 
 model TopOffers {
@@ -64,4 +68,25 @@ model TopOffers {
   travelPlans      Json
   includedIn       String @db.Text
   dateRange        String
+}
+
+model Favorite {
+  id            Int         @id @default(autoincrement())
+  user          User        @relation(fields: [userId], references: [firebaseUid])
+  userId        String
+  destination   Destination @relation(fields: [destinationId], references: [id])
+  destinationId Int
+  createdAt     DateTime    @default(now())
+
+  @@unique([userId, destinationId])
+}
+
+model CartItem {
+  id            Int         @id @default(autoincrement())
+  user          User        @relation(fields: [userId], references: [firebaseUid])
+  userId        String
+  destination   Destination @relation(fields: [destinationId], references: [id])
+  destinationId Int
+  quantity      Int         @default(1)
+  createdAt     DateTime    @default(now())
 }
