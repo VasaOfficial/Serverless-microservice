@@ -19,15 +19,15 @@ export class FavoritesService {
     try {
       const { firebaseUid, destinationId } = JSON.parse(event.body || '{}')
 
-      if(!firebaseUid || !destinationId) {
+      if (!firebaseUid || !destinationId) {
         return ErrorResponse(400, 'firebaseUid and destinationId are required')
       }
 
-      const favorite = await this.repository.addFavorite(firebaseUid, destinationId)
+      const favorite = await this.repository.addFavorite({ firebaseUid, destinationId })
 
       return SuccessResponse(favorite)
     } catch (error) {
-      return ErrorResponse(500, error.message);
+      return ErrorResponse(500, error.message)
     }
   }
 
@@ -44,7 +44,7 @@ export class FavoritesService {
 
       return SuccessResponse(favorites)
     } catch (error) {
-      return ErrorResponse(500, `Failed to retrieve favorites: ${error.message}`);
+      return ErrorResponse(500, `Failed to retrieve favorites: ${error.message}`)
     }
   }
 
@@ -56,11 +56,11 @@ export class FavoritesService {
         return ErrorResponse(400, 'firebaseUid and destinationId are required')
       }
 
-      const result = await this.repository.deleteFavorite(firebaseUid, destinationId)
+      const result = await this.repository.deleteFavorite({ firebaseUid, destinationId })
 
       return SuccessResponse(result)
     } catch (error) {
-      return ErrorResponse(500, `Failed to remove favorite: ${error.message}`);
+      return ErrorResponse(500, `Failed to remove favorite: ${error.message}`)
     }
   }
 }

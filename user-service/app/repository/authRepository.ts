@@ -21,11 +21,11 @@ export class AuthRepository {
     }
   }
 
-  async findUserByUid(uid: string) {
+  async findUserByUid({ firebaseUid }: UserModel) {
     try {
       const user = await prisma.user.findUnique({
         where: {
-          firebaseUid: uid,
+          firebaseUid: firebaseUid,
         },
       })
       return user

@@ -13,5 +13,5 @@ export const AddFavorites = async (event: APIGatewayProxyEventV2) => {
 }
 
 export const DeleteFavorites = async (event: APIGatewayProxyEventV2) => {
-  return service.DeleteFavorites(event);
-};
+  return service.DeleteFavorites(event)
+}

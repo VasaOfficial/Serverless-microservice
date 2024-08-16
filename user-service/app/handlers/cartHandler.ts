@@ -9,13 +9,13 @@ export const AddCartItem = async (event: APIGatewayProxyEventV2) => {
 }
 
 export const GetCartItem = async (event: APIGatewayProxyEventV2) => {
-  return service.GetCartItem(event);
-};
+  return service.GetCartItem(event)
+}
 
 export const RemoveCartItem = async (event: APIGatewayProxyEventV2) => {
   return service.RemoveCartItem(event)
 }
 
 export const UpdateCartItem = async (event: APIGatewayProxyEventV2) => {
-  return service.UpdateCartItem(event);
-};
+  return service.UpdateCartItem(event)
+}

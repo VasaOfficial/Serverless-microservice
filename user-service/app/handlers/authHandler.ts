@@ -13,5 +13,5 @@ export const ValidateToken = async (event: APIGatewayProxyEventV2) => {
 }
 
 export const OAuthentication = async (event: APIGatewayProxyEventV2) => {
-  return service.OAuthentication(event);
-};
+  return service.OAuthentication(event)
+}

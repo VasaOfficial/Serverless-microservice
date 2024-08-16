@@ -6,7 +6,7 @@ export class SignupInput {
 
   @IsString()
   @Length(6, 32)
-  uid: string
+  firebaseUid: string
 }
 
 export class PasswordResetInput {

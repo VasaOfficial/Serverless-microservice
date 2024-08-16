@@ -29,7 +29,7 @@ export class AuthService {
       // Save user data to your database using UserRepository
       const data = await this.repository.createAccount({
         email: input.email,
-        firebaseUid: input.uid,
+        firebaseUid: input.firebaseUid,
       })
 
       return SuccessResponse({
@@ -65,10 +65,10 @@ export class AuthService {
 
       // Verify Firebase token
       const decodedToken = await auth.verifyIdToken(token)
-      const { uid } = decodedToken
+      const { firebaseUid } = decodedToken
 
       // Retrieve user data from the database
-      const user = await this.repository.findUserByUid(uid)
+      const user = await this.repository.findUserByUid(firebaseUid)
       if (!user) {
         return ErrorResponse(404, 'User not found')
       }
@@ -96,43 +96,43 @@ export class AuthService {
 
   async OAuthentication(event: APIGatewayProxyEventV2) {
     try {
-      const authHeader = event.headers.authorization;
+      const authHeader = event.headers.authorization
       if (!authHeader) {
-        return ErrorResponse(401, 'Unauthorized');
+        return ErrorResponse(401, 'Unauthorized')
       }
 
       // Extract the token from the Authorization header
-      const token = authHeader.split(' ')[1];
+      const token = authHeader.split(' ')[1]
       if (!token) {
-        return ErrorResponse(401, 'Unauthorized');
+        return ErrorResponse(401, 'Unauthorized')
       }
 
       // Verify Firebase token
-      const decodedToken = await auth.verifyIdToken(token);
-      const { uid } = decodedToken;
+      const decodedToken = await auth.verifyIdToken(token)
+      const { firebaseUid } = decodedToken
 
       // Check if the user exists in the database
-      const user = await this.repository.findUserByUid(uid);
+      const user = await this.repository.findUserByUid(firebaseUid)
 
       if (user) {
         // User exists, validate the token
-        return await this.TokenVerification(event);
+        return await this.TokenVerification(event)
       } else {
-        return await this.CreateUser(event);
+        return await this.CreateUser(event)
       }
     } catch (error) {
       if (error.code === 'auth/argument-error') {
-        return ErrorResponse(400, 'Invalid token');
+        return ErrorResponse(400, 'Invalid token')
       } else if (error.code === 'auth/id-token-expired') {
-        return ErrorResponse(401, 'Token expired');
+        return ErrorResponse(401, 'Token expired')
       } else if (error.code === 'auth/id-token-revoked') {
-        return ErrorResponse(401, 'Token revoked');
+        return ErrorResponse(401, 'Token revoked')
       } else if (error.code === 'auth/invalid-id-token') {
-        return ErrorResponse(401, 'Invalid ID token');
+        return ErrorResponse(401, 'Invalid ID token')
       } else if (error.code === 'auth/user-not-found') {
-        return ErrorResponse(404, 'User not found');
+        return ErrorResponse(404, 'User not found')
       } else {
-        return ErrorResponse(500, error.message || 'Internal server error');
+        return ErrorResponse(500, error.message || 'Internal server error')
       }
     }
   }
