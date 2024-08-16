@@ -49,8 +49,34 @@ export class CartService {
   }
 
   async UpdateCartItem(event: APIGatewayProxyEventV2) {
+    try {
+      const { firebaseUid, destinationId, quantity } = JSON.parse(event.body || '{}');
+
+      if (!firebaseUid || !destinationId || !quantity) {
+        return ErrorResponse(400, 'firebaseUid, destinationId, and quantity are required');
+      }
+
+      const result = await this.repository.updateCart(firebaseUid, destinationId, quantity);
+
+      return SuccessResponse(result);
+    } catch (error) {
+      return ErrorResponse(500, error.message);
+    }
   }
 
   async RemoveCartItem(event: APIGatewayProxyEventV2) {
+    try {
+      const { firebaseUid, destinationId } = JSON.parse(event.body || '{}');
+
+      if (!firebaseUid || !destinationId) {
+        return ErrorResponse(400, 'firebaseUid and destinationId are required');
+      }
+
+      const result = await this.repository.removeFromCart(firebaseUid, destinationId);
+
+      return SuccessResponse(result);
+    } catch (error) {
+      return ErrorResponse(500, error.message);
+    }
   }
 }

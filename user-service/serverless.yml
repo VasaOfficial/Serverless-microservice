@@ -100,7 +100,7 @@ functions:
     timeout: 30
     events:
       - httpApi:
-          path: /user/cart/{productId}
+          path: /user/cart
           method: delete
 
   updateCart:
@@ -108,8 +108,8 @@ functions:
     timeout: 30
     events:
       - httpApi:
-          path: /user/cart/{productId}
-          method: put
+          path: /user/cart
+          method: patch
 
 build:
   esbuild:

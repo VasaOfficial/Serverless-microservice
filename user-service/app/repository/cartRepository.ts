@@ -101,9 +101,64 @@ export class CartRepository {
     }
   }
 
-  async updateCart() {
+  async updateCart(firebaseUid: string, destinationId: number, quantity: number) {
+    try {
+      // Check if the cart item exists
+      const existingCartItem = await prisma.cartItem.findFirst({
+        where: {
+            userId: firebaseUid,
+            destinationId: destinationId,
+        },
+      });
+
+      if (!existingCartItem) {
+        throw new Error('Cart item does not exist');
+      }
+
+      // Update the quantity of the cart item
+      const updatedCartItem = await prisma.cartItem.update({
+        where: {
+          id: existingCartItem.id,
+        },
+        data: {
+          quantity: quantity,
+        },
+      });
+
+      return updatedCartItem;
+    } catch (error) {
+      throw new Error(`Failed to update cart item: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
+    }
   }
 
-  async removeFromCart() {
+  async removeFromCart(firebaseUid: string, destinationId: number) {
+    try {
+      // Check if the cart item exists
+      const existingCartItem = await prisma.cartItem.findFirst({
+        where: {
+            userId: firebaseUid,
+            destinationId: destinationId,
+        },
+      });
+
+      if (!existingCartItem) {
+        throw new Error('Cart item does not exist');
+      }
+
+      // Delete the cart item
+      await prisma.cartItem.delete({
+        where: {
+          id: existingCartItem.id,
+        },
+      });
+
+      return { message: 'Item removed from cart successfully' };
+    } catch (error) {
+      throw new Error(`Failed to remove item from cart: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
+    }
   }
 }
