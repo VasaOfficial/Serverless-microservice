@@ -1,17 +1,17 @@
 import { APIGatewayProxyEventV2 } from 'aws-lambda'
 import { autoInjectable } from 'tsyringe'
 import { plainToClass } from 'class-transformer'
-import { ErrorResponse, SuccessResponse } from '../util/response'
-import { UserRepository } from '../repository/authRepository'
-import { SignupInput } from '../models/dto/LoginInput'
-import { AppValidationError } from '../util/errors'
+import { ErrorResponse, SuccessResponse } from 'app/util/response'
+import { AuthRepository } from 'app/repository/authRepository'
+import { SignupInput } from 'app/models/dto/LoginInput'
+import { AppValidationError } from 'app/util/errors'
 import auth from 'app/config/firebase'
 
 @autoInjectable()
-export class UserService {
-  repository: UserRepository
+export class AuthService {
+  repository: AuthRepository
 
-  constructor(repository: UserRepository) {
+  constructor(repository: AuthRepository) {
     this.repository = repository
   }
 

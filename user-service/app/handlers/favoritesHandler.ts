@@ -1,8 +1,8 @@
 import { APIGatewayProxyEventV2 } from 'aws-lambda'
-import { UserRepository } from 'app/repository/favoritesRepository'
-import { UserService } from 'app/services/favoritesService'
+import { FavoritesRepository } from 'app/repository/favoritesRepository'
+import { FavoritesService } from 'app/services/favoritesService'
 
-const service = new UserService(new UserRepository())
+const service = new FavoritesService(new FavoritesRepository())
 
 export const GetFavorites = async (event: APIGatewayProxyEventV2) => {
   return service.GetFavorites(event)

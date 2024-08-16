@@ -1,8 +1,7 @@
-//import { ProfileInput } from '../models/dto/AddressInput'
-import { UserModel } from '../models/UserModel'
-import prisma from '../util/prismaClient'
+import { UserModel } from 'app/models/UserModel'
+import prisma from 'app/util/prismaClient'
 
-export class UserRepository {
+export class AuthRepository {
   constructor() {}
 
   async createAccount({ email, firebaseUid }: UserModel) {

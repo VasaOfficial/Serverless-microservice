@@ -27,13 +27,13 @@ provider:
 
 functions:
   #User Section
-  signup:
-    handler: app/handler.SignUp
-    timeout: 30
-    events:
-      - httpApi:
-          path: /user/signup
-          method: post
+  # signup:
+  #   handler: app/handler.SignUp
+  #   timeout: 30
+  #   events:
+  #     - httpApi:
+  #         path: /user/signup
+  #         method: post
 
   # validateToken:
   #   handler: app/handler.ValidateToken
@@ -80,7 +80,7 @@ functions:
   # Cart Section
 
   # getCart:
-  #   handler: app/handler.getCart
+  #   handler: app/handler.GetCartItem
   #   timeout: 30
   #   events:
   #     - httpApi:
@@ -88,28 +88,28 @@ functions:
   #         method: get
 
   # addToCart:
-  #   handler: app/handler.addToCart
+  #   handler: app/handler.AddCartItem
   #   timeout: 30
   #   events:
   #     - httpApi:
-  #         path: /user/cart/{productId}
+  #         path: /user/cart
   #         method: post
 
-  # removeFromCart:
-  #   handler: app/handler.removeFromCart
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /user/cart/{productId}
-  #         method: delete
+  removeFromCart:
+    handler: app/handler.RemoveCartItem
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/cart/{productId}
+          method: delete
 
-  # updateCart:
-  #   handler: app/handler.updateCart
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /user/cart/{productId}
-  #         method:put
+  updateCart:
+    handler: app/handler.UpdateCartItem
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/cart/{productId}
+          method: put
 
 build:
   esbuild:

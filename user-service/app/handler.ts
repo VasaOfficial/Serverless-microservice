@@ -5,5 +5,4 @@ dotenv.config()
 
 export * from './handlers/authHandler'
 export * from './handlers/favoritesHandler'
-// export * from './handlers/cartHandler'
-// export * from './handlers/orderHandler'
+export * from './handlers/cartHandler'

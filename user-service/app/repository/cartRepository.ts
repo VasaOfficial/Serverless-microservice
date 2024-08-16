@@ -1,81 +1,109 @@
-import { ShoppingCartModel } from '../models/ShoppingCartModel'
-import prisma from '../util/prismaClient'
-import { CartItemModel } from '../models/CartItemsModel'
+import prisma from 'app/util/prismaClient'
+import { CartItemModel } from 'app/models/CartItemsModel'
 
 export class CartRepository {
   constructor() {}
 
-  async findShoppingCart(userId: number): Promise<ShoppingCartModel | null> {
-    return prisma.shoppingCart.findFirst({
-      where: { user_id: userId },
-    })
-  }
+  async addToCart(firebaseUid: string, destinationId: number, quantity: number) {
+    try {
+      // Check if the user exists
+      const user = await prisma.user.findUnique({
+        where: { firebaseUid: firebaseUid },
+      });
 
-  async createShoppingCart(userId: number): Promise<ShoppingCartModel> {
-    return prisma.shoppingCart.create({
-      data: { user_id: userId },
-    })
-  }
+      if (!user) {
+        throw new Error('User does not exist');
+      }
 
-  async findCartItemById(cartId: number): Promise<CartItemModel | null> {
-    return prisma.cartItem.findFirst({
-      where: { cart_id: cartId },
-    })
-  }
+      // Check if the destination exists
+      const destinationExists = await prisma.destination.findUnique({
+        where: { id: destinationId },
+      });
 
-  async findCartItemByProductId(productId: string): Promise<CartItemModel | null> {
-    return prisma.cartItem.findFirst({
-      where: { product_id: productId },
-    })
-  }
+      if (!destinationExists) {
+        throw new Error('Invalid destination ID');
+      }
 
-  async findCartItems(userId: number): Promise<CartItemModel[]> {
-    const cart = await this.findShoppingCart(userId)
-    if (!cart) return []
+      // Check if the cart item already exists
+      const existingCartItem = await prisma.cartItem.findFirst({
+        where: {
+          userId: firebaseUid,
+          destinationId: destinationId,
+        },
+      });
 
-    return prisma.cartItem.findMany({
-      where: { cart_id: cart.cart_id },
-    })
-  }
+      if (existingCartItem) {
+        // Update the quantity if the item already exists
+        const updatedCartItem = await prisma.cartItem.update({
+          where: {
+            id: existingCartItem.id,
+          },
+          data: {
+            quantity: existingCartItem.quantity + quantity,
+          },
+          include: {
+            destination: true,
+          }
+        });
 
-  async findCartItemsByCartId(cartId: number): Promise<CartItemModel[]> {
-    return prisma.cartItem.findMany({
-      where: { cart_id: cartId },
-    })
-  }
+        return updatedCartItem;
+      }
 
-  async createCartItem(data: CartItemModel): Promise<CartItemModel> {
-    return prisma.cartItem.create({
-      data,
-    })
-  }
+      // Add new item to the cart
+      const cartItem = await prisma.cartItem.create({
+        data: {
+          userId: firebaseUid,
+          destinationId: destinationId,
+          quantity: quantity,
+        },
+        include: {
+          destination: true,
+        },
+      });
 
-  async updateCartItemById(itemId: number, qty: number): Promise<CartItemModel> {
-    return prisma.cartItem.update({
-      where: { item_id: itemId },
-      data: { item_qty: qty },
-    })
-  }
-
-  async updateCartItemByProductId(productId: string, qty: number): Promise<CartItemModel> {
-    const cartItem = await prisma.cartItem.findFirst({
-      where: { product_id: productId },
-    })
-
-    if (!cartItem) {
-      return null
+      return cartItem;
+    } catch (error) {
+      throw new Error(`Failed to add item to cart: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
     }
-
-    return prisma.cartItem.update({
-      where: { item_id: cartItem.item_id },
-      data: { item_qty: qty },
-    })
   }
 
-  async deleteCartItem(id: number) {
-    const deletedItem = await prisma.cartItem.delete({
-      where: { item_id: id },
-    })
-    return deletedItem
+  async getCartItems(firebaseUid: string) {
+    try {
+      // Check if the user exists
+      const user = await prisma.user.findUnique({
+        where: { firebaseUid },
+        include: {
+          CartItem: {
+            include: {
+              destination: true,
+            },
+          },
+        },
+      });
+
+      if (!user) {
+        throw new Error('User does not exist');
+      }
+
+      // Return cart items directly
+      return user.CartItem.map(item => ({
+        id: item.id,
+        destination: item.destination,
+        quantity: item.quantity,
+        createdAt: item.createdAt,
+      }));
+    } catch (error) {
+      throw new Error(`Failed to retrieve cart items: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
+
+  async updateCart() {
+  }
+
+  async removeFromCart() {
   }
 }

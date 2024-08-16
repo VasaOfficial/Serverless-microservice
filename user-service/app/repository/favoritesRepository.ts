@@ -1,7 +1,6 @@
-//import { UserModel } from '../models/UserModel'
-import prisma from '../util/prismaClient'
+import prisma from 'app/util/prismaClient'
 
-export class UserRepository {
+export class FavoritesRepository {
   constructor() {}
 
   async addFavorite(firebaseUid: string, destinationId: number) {

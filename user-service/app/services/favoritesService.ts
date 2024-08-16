@@ -1,14 +1,13 @@
 import { APIGatewayProxyEventV2 } from 'aws-lambda'
 import { autoInjectable } from 'tsyringe'
-// import { plainToClass } from 'class-transformer'
-import { ErrorResponse, SuccessResponse } from '../util/response'
-import { UserRepository } from '../repository/favoritesRepository'
+import { ErrorResponse, SuccessResponse } from 'app/util/response'
+import { FavoritesRepository } from 'app/repository/favoritesRepository'
 
 @autoInjectable()
-export class UserService {
-  repository: UserRepository
+export class FavoritesService {
+  repository: FavoritesRepository
 
-  constructor(repository: UserRepository) {
+  constructor(repository: FavoritesRepository) {
     this.repository = repository
   }
 
