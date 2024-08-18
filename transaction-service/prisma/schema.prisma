@@ -12,3 +12,94 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  user_id     Int        @id @default(autoincrement())
+  firebaseUid String     @unique
+  email       String     @unique
+  Favorite    Favorite[]
+  CartItem    CartItem[]
+  Order       Order[]
+}
+
+model Continent {
+  id        Int       @id @default(autoincrement())
+  name      String
+  countries Country[]
+}
+
+model Country {
+  id           Int           @id @default(autoincrement())
+  name         String
+  continent    Continent     @relation(fields: [continentId], references: [id])
+  continentId  Int
+  destinations Destination[]
+}
+
+model Destination {
+  id           Int        @id @default(autoincrement())
+  countryName  String
+  country      Country    @relation(fields: [countryId], references: [id])
+  countryId    Int
+  city         String     @db.VarChar(100)
+  price        Int
+  latitude     Float
+  longitude    Float
+  imageUrl     String     @db.VarChar(255)
+  dateRange    String
+  durationDays Int
+  description  String     @db.Text
+  tripRoute    String     @db.Text
+  travelPlans  Json
+  includedIn   String     @db.Text
+  Favorites    Favorite[]
+  CartItems    CartItem[]
+}
+
+model TopOffers {
+  id               Int    @id @default(autoincrement())
+  countryName      String
+  city             String @db.VarChar(100)
+  price            Int
+  imageUrl         String @db.VarChar(255)
+  shortDescription String @db.Text
+  description      String @db.Text
+  durationDays     Int
+  tripRoute        String @db.Text
+  travelPlans      Json
+  includedIn       String @db.Text
+  dateRange        String
+}
+
+model Favorite {
+  id            Int         @id @default(autoincrement())
+  user          User        @relation(fields: [userId], references: [firebaseUid])
+  userId        String
+  destination   Destination @relation(fields: [destinationId], references: [id])
+  destinationId Int
+  createdAt     DateTime    @default(now())
+
+  @@unique([userId, destinationId])
+}
+
+model CartItem {
+  id            Int         @id @default(autoincrement())
+  user          User        @relation(fields: [userId], references: [firebaseUid])
+  userId        String
+  destination   Destination @relation(fields: [destinationId], references: [id])
+  destinationId Int
+  quantity      Int         @default(1)
+  createdAt     DateTime    @default(now())
+
+  Order Order[]
+}
+
+model Order {
+  id          Int        @id @default(autoincrement())
+  user        User       @relation(fields: [userId], references: [firebaseUid])
+  userId      String
+  totalAmount Int
+  status      String     @default("pending")
+  createdAt   DateTime   @default(now())
+  cartItems   CartItem[]
+}

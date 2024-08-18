@@ -41,6 +41,7 @@
     "firebase": "^10.12.5",
     "firebase-admin": "^12.3.0",
     "reflect-metadata": "^0.2.2",
+    "stripe": "^16.8.0",
     "tsyringe": "^4.8.0"
   }
 }

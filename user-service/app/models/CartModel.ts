@@ -1,5 +1,5 @@
 export interface CartModel {
-  firebaseUid: string
-  destinationId: number
+  firebaseUid?: string
+  destinationId?: number
   quantity?: number
 }

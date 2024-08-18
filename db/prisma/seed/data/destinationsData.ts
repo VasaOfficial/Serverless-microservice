@@ -9,6 +9,7 @@ export const locations: Record<string, Record<string, {
   country: string;
   latitude: number;
   longitude: number;
+  isTopOffer: boolean;
   price: number;
   imageUrl: string;
   dateRange: string;
@@ -25,6 +26,7 @@ export const locations: Record<string, Record<string, {
       city: 'Paris',
       latitude: 48.8566,
       longitude: 2.3522,
+      isTopOffer: true,
       price: 2000,
       imageUrl: '///',
       dateRange: 'JUN 2 - JUN 12',
@@ -74,6 +76,7 @@ export const locations: Record<string, Record<string, {
       city: 'London',
       latitude: 51.5074,
       longitude: -0.1278,
+      isTopOffer: false,
       price: 1500,
       imageUrl: '//',
       dateRange: 'JAN 12 - JAN 22',
@@ -124,6 +127,7 @@ export const locations: Record<string, Record<string, {
       city: 'Rome',
       latitude: 41.9028,
       longitude: 12.4964,
+      isTopOffer: false,
       price: 1200,
       imageUrl: '/',
       dateRange: 'OCT 5 - OCT 13',
@@ -166,6 +170,7 @@ export const locations: Record<string, Record<string, {
       city: 'Madrid',
       latitude: 40.4168,
       longitude: -3.7038,
+      isTopOffer: false,
       price: 1400,
       imageUrl: '/',
       dateRange: 'DEC 1 - DEC 12',
@@ -228,6 +233,7 @@ export const locations: Record<string, Record<string, {
       city: 'Zagreb',
       latitude: 45.8150,
       longitude: 15.9819,
+      isTopOffer: false,
       price: 1000,
       imageUrl: '/',
       dateRange: 'AUG 23 - AUG 30',
@@ -270,6 +276,7 @@ export const locations: Record<string, Record<string, {
       city: 'Berlin',
       latitude: 52.5200,
       longitude: 13.4050,
+      isTopOffer: false,
       price: 1300,
       imageUrl: '/',
       dateRange: 'MAY 31 - JUN 9',
@@ -320,6 +327,7 @@ export const locations: Record<string, Record<string, {
       city: 'Athens',
       latitude: 37.9838,
       longitude: 23.7275,
+      isTopOffer: false,
       price: 1500,
       imageUrl: '/',
       dateRange: 'FEB 7 - FEB 17',
@@ -375,6 +383,7 @@ export const locations: Record<string, Record<string, {
       city: 'Amsterdam',
       latitude: 52.3676,
       longitude: 4.9041,
+      isTopOffer: false,
       price: 1100,
       imageUrl: '/',
       dateRange: 'NOV 2 - NOV 10',
@@ -421,6 +430,7 @@ export const locations: Record<string, Record<string, {
       city: 'Vienna',
       latitude: 48.210033,
       longitude: 16.363449,
+      isTopOffer: false,
       price: 2000,
       imageUrl: '/',
       dateRange: 'FEB 13 - FEB 23',
@@ -476,6 +486,7 @@ export const locations: Record<string, Record<string, {
       city: 'Moscow',
       latitude: 55.7558,
       longitude: 37.6176,
+      isTopOffer: false,
       price: 1800,
       imageUrl: '/',
       dateRange: 'JUL 4 - JUL 16',
@@ -538,6 +549,7 @@ export const locations: Record<string, Record<string, {
       city: 'Bern',
       latitude: 46.9480,
       longitude: 7.4474,
+      isTopOffer: false,
       price: 1600,
       imageUrl: '/',
       dateRange: 'SEP 27 - OCT 7',
@@ -588,6 +600,7 @@ export const locations: Record<string, Record<string, {
       city: 'Oslo',
       latitude: 59.9139,
       longitude: 10.7522,
+      isTopOffer: false,
       price: 1800,
       imageUrl: '/',
       dateRange: 'APR 2 - APR 13',
@@ -650,6 +663,7 @@ export const locations: Record<string, Record<string, {
       city: 'Belgrade',
       latitude: 44.7866,
       longitude: 20.4489,
+      isTopOffer: true,
       price: 800,
       imageUrl: '/',
       dateRange: 'SEP 10 - SEP 17',
@@ -693,6 +707,7 @@ export const locations: Record<string, Record<string, {
       city: 'Cairo',
       latitude: 30.033333,
       longitude: 31.233334,
+      isTopOffer: false,
       price: 1500,
       imageUrl: '/',
       dateRange: 'SEP 20 - SEP 30',
@@ -755,6 +770,7 @@ export const locations: Record<string, Record<string, {
       city: 'Nairobi',
       latitude: -1.2864,
       longitude: 36.8172,
+      isTopOffer: false,
       price: 2000,
       imageUrl: '/',
       dateRange: 'AUG 10 - AUG 22',
@@ -814,6 +830,7 @@ export const locations: Record<string, Record<string, {
       city: 'Antananarivo',
       latitude: -18.8792,
       longitude: 47.5079,
+      isTopOffer: false,
       price: 2500,
       imageUrl: '/',
       dateRange: 'NOV 2 - NOV 16',
@@ -876,6 +893,7 @@ export const locations: Record<string, Record<string, {
       city: 'Rabat',
       latitude: 34.020882,
       longitude: -6.841650,
+      isTopOffer: false,
       price: 1700,
       imageUrl: '/',
       dateRange: 'FEB 19 - FEB 29',
@@ -934,6 +952,7 @@ export const locations: Record<string, Record<string, {
       city: 'Windhoek',
       latitude: -22.9576,
       longitude: 18.4904,
+      isTopOffer: false,
       price: 2500,
       imageUrl: '/',
       dateRange: 'JAN 1 - JAN 14',
@@ -996,6 +1015,7 @@ export const locations: Record<string, Record<string, {
       city: 'Cape Town',
       latitude: -33.918861,
       longitude: 18.423300,
+      isTopOffer: false,
       price: 2800,
       imageUrl: '/',
       dateRange: 'JUN 10 - JUN 24',
@@ -1066,6 +1086,7 @@ export const locations: Record<string, Record<string, {
       city: 'Zanzibar City',
       latitude: -6.1659,
       longitude: 39.2026,
+      isTopOffer: false,
       price: 2000,
       imageUrl: '/',
       dateRange: 'JUL 20 - JUL 28',
@@ -1117,6 +1138,7 @@ export const locations: Record<string, Record<string, {
       city: 'Kampala',
       latitude: 0.3476,
       longitude: 32.5825,
+      isTopOffer: false,
       price: 3000,
       imageUrl: '/',
       dateRange: 'MAY 5 - MAY 17',
@@ -1182,6 +1204,7 @@ export const locations: Record<string, Record<string, {
       city: 'Hong Kong',
       latitude: 22.302711,
       longitude: 114.177216,
+      isTopOffer: false,
       price: 2500,
       imageUrl: '/',
       dateRange: 'AUG 8 - AUG 22',
@@ -1248,6 +1271,7 @@ export const locations: Record<string, Record<string, {
       city: 'Beijing',
       latitude: 39.9042,
       longitude: 116.4074,
+      isTopOffer: false,
       price: 1800,
       imageUrl: '/',
       dateRange: 'FEB 20 - FEB 27',
@@ -1290,6 +1314,7 @@ export const locations: Record<string, Record<string, {
       city: 'New Delhi',
       latitude: 20.5937,
       longitude: 78.9629,
+      isTopOffer: false,
       price: 2200,
       imageUrl: '/',
       dateRange: 'OCT 20 - NOV 1',
@@ -1344,6 +1369,7 @@ export const locations: Record<string, Record<string, {
       city: 'Tehran',
       latitude: 32.4279,
       longitude: 53.6880,
+      isTopOffer: false,
       price: 2000,
       imageUrl: '/',
       dateRange: 'MAY 28 - JUN 7',
@@ -1402,6 +1428,7 @@ export const locations: Record<string, Record<string, {
       city: 'Colombo',
       latitude: 6.927079,
       longitude: 79.861244,
+      isTopOffer: false,
       price: 1900,
       imageUrl: '/',
       dateRange: 'SEP 10 - SEP 19',
@@ -1448,6 +1475,7 @@ export const locations: Record<string, Record<string, {
       city: 'Tokyo',
       latitude: 35.6895,
       longitude: 139.6917,
+      isTopOffer: false,
       price: 3000,
       imageUrl: '/',
       dateRange: 'APR 1 - APR 14',
@@ -1510,6 +1538,7 @@ export const locations: Record<string, Record<string, {
       city: 'Baghdad',
       latitude: 33.3152,
       longitude: 44.3661,
+      isTopOffer: false,
       price: 2500,
       imageUrl: '/',
       dateRange: 'MAR 20 - MAR 30',
@@ -1564,6 +1593,7 @@ export const locations: Record<string, Record<string, {
       city: 'Kathmandu',
       latitude: 28.3949,
       longitude: 84.1240,
+      isTopOffer: false,
       price: 1800,
       imageUrl: '/',
       dateRange: 'SEP 24 - OCT 6',
@@ -1622,6 +1652,7 @@ export const locations: Record<string, Record<string, {
       city: 'Seoul',
       latitude: 37.5665,
       longitude: 126.9780,
+      isTopOffer: false,
       price: 2200,
       imageUrl: '/',
       dateRange: 'DEC 2 - DEC 12',
@@ -1676,6 +1707,7 @@ export const locations: Record<string, Record<string, {
       city: 'Bangkok',
       latitude: 13.7563,
       longitude: 100.5018,
+      isTopOffer: false,
       price: 2500,
       imageUrl: '/',
       dateRange: 'JUL 12 - JUL 26',
@@ -1738,6 +1770,7 @@ export const locations: Record<string, Record<string, {
       city: 'Ulaanbaatar',
       latitude: 47.921230,
       longitude: 106.918556,
+      isTopOffer: false,
       price: 2200,
       imageUrl: '/',
       dateRange: 'SEP 24 - OCT 4',
@@ -1800,6 +1833,7 @@ export const locations: Record<string, Record<string, {
       city: 'Abu Dhabi',
       latitude: 23.4241,
       longitude: 53.8478,
+      isTopOffer: true,
       price: 2800,
       imageUrl: '/',
       dateRange: 'DEC 23 - JAN 2',
@@ -1863,6 +1897,7 @@ export const locations: Record<string, Record<string, {
       city: 'Hanoi',
       latitude: 14.0583,
       longitude: 108.2772,
+      isTopOffer: false,
       price: 2000,
       imageUrl: '/',
       dateRange: 'APR 20 - MAY 2',
@@ -1915,7 +1950,52 @@ export const locations: Record<string, Record<string, {
       Transportation between cities (domestic flights and private transfers)
       English-speaking tour guide throughout the trip
       All taxes and service charges`
-    }
+    },
+    'Singapore': {
+      id: 13,
+      country: 'Singapore',
+      city: 'Singapore',
+      price: 2200,
+      latitude: 1.290270,
+      longitude: 103.851959,
+      isTopOffer: true,
+      imageUrl: '///',
+      dateRange: 'NOV 10 - 20',
+      days: 8,
+      description: 'Discover the melting pot of cultures in Singapore as you explore its bustling neighborhoods, savor diverse culinary delights, and marvel at its futuristic skyline. From the iconic Gardens by the Bay to the historic neighborhoods of Chinatown and Little India, immerse yourself in the rich tapestry of this dynamic city-state.',
+      tripRoute: 'Belgrade → Singapore → Sentosa Island → Marina Bay → Jurong Bird Park → Belgrade',
+      travelPlan: [
+        {
+          'day': '1-2',
+          'description': 'Arrive in Singapore. Check into the hotel and rest. Explore the vibrant neighborhoods of Chinatown and Little India.'
+        },
+        {
+          'day': '3',
+          'description': 'Visit the iconic Gardens by the Bay and marvel at the Supertree Grove and Cloud Forest.'
+        },
+        {
+          'day': '4',
+          'description': 'Spend a day of fun and relaxation at Sentosa Island, home to attractions such as Universal Studios Singapore and S.E.A. Aquarium.'
+        },
+        {
+          'day': '5',
+          'description': 'Discover the futuristic architecture of Marina Bay and visit attractions like Marina Bay Sands and the Merlion Park.'
+        },
+        {
+          'day': '6',
+          'description': 'Explore the lush greenery and exotic birds at Jurong Bird Park, one of the largest bird parks in the world.'
+        },
+        {
+          'day': '7-8',
+          'description': 'Return to Belgrade.'
+        },
+      ],
+      includedIn: `Accommodation in well-appointed hotels
+      Transportation within Singapore (public transport or private transfers)
+      Admission tickets to attractions mentioned in the itinerary
+      Daily breakfast
+      Assistance of a tour guide throughout the trip`
+    },
   },
   'Oceania': {
     'Papua New Guinea': {
@@ -1924,6 +2004,7 @@ export const locations: Record<string, Record<string, {
       city: 'Port Moresby',
       latitude: -9.47723,
       longitude: 147.15089,
+      isTopOffer: false,
       price: 3500,
       imageUrl: '/',
       dateRange: 'OCT 5 - OCT 17',
@@ -1980,6 +2061,7 @@ export const locations: Record<string, Record<string, {
       city: 'Uluru',
       latitude: -25.3444,
       longitude: 131.0369,
+      isTopOffer: false,
       price: 2500,
       imageUrl: '/',
       dateRange: 'AUG 20 - AUG 25',
@@ -2018,6 +2100,7 @@ export const locations: Record<string, Record<string, {
       city: 'Honiara',
       latitude: -9.6457,
       longitude: 160.1562,
+      isTopOffer: false,
       price: 3000,
       imageUrl: '/',
       dateRange: 'MAY 4 - MAY 14',
@@ -2073,6 +2156,7 @@ export const locations: Record<string, Record<string, {
       city: 'Canberra',
       latitude: -35.282001,
       longitude: 149.128998,
+      isTopOffer: false,
       price: 3500,
       imageUrl: '/',
       dateRange: 'JUN 7 - JUN 21',
@@ -2144,6 +2228,7 @@ export const locations: Record<string, Record<string, {
       city: 'Wellington',
       latitude: -41.2865,
       longitude: 174.7762,
+      isTopOffer: false,
       price: 4000,
       imageUrl: '/',
       dateRange: 'NOV 1 - NOV 14',
@@ -2207,6 +2292,7 @@ export const locations: Record<string, Record<string, {
       city: 'Cairns',
       latitude: -18.156290,
       longitude: 147.485962,
+      isTopOffer: false,
       price: 3000,
       imageUrl: '/',
       dateRange: 'APR 20 - APR 27',
@@ -2254,6 +2340,7 @@ export const locations: Record<string, Record<string, {
       city: 'Suva',
       latitude: -17.713371,
       longitude: 178.065033,
+      isTopOffer: false,
       price: 3000,
       imageUrl: '/',
       dateRange: 'SEP 4 - SEP 14',
@@ -2306,6 +2393,7 @@ export const locations: Record<string, Record<string, {
       city: 'Buenos Aires',
       latitude: -34.6037,
       longitude: -58.3816,
+      isTopOffer: false,
       price: 3800,
       imageUrl: '/',
       dateRange: 'JUN 20 - JUL 2',
@@ -2357,6 +2445,7 @@ export const locations: Record<string, Record<string, {
       city: 'Santiago',
       latitude: -33.4489,
       longitude: -70.6693,
+      isTopOffer: false,
       price: 3500,
       imageUrl: '/',
       dateRange: 'JUN 2 - JUN 12',
@@ -2412,6 +2501,7 @@ export const locations: Record<string, Record<string, {
       city: 'Brasília',
       latitude: -15.8267,
       longitude: -47.9218,
+      isTopOffer: true,
       price: 1000,
       imageUrl: '/',
       dateRange: 'AUG 4 - AUG 11',
@@ -2455,6 +2545,7 @@ export const locations: Record<string, Record<string, {
       city: 'Lima',
       latitude: -12.0464,
       longitude: -77.0428,
+      isTopOffer: false,
       price: 3200,
       imageUrl: '/',
       dateRange: 'OCT 14 - OCT 26',
@@ -2510,6 +2601,7 @@ export const locations: Record<string, Record<string, {
       city: 'Caracas',
       latitude: 10.4806,
       longitude: -66.9036,
+      isTopOffer: false,
       price: 3000,
       imageUrl: '/',
       dateRange: 'JAN 20 - JAN 30',
@@ -2557,6 +2649,7 @@ export const locations: Record<string, Record<string, {
       city: 'Bogotá',
       latitude: 4.7110,
       longitude: -74.0721,
+      isTopOffer: false,
       price: 3200,
       imageUrl: '/',
       dateRange: 'NOV 11 - NOV 23',
@@ -2612,6 +2705,7 @@ export const locations: Record<string, Record<string, {
       city: 'Amazon',
       latitude: -2.163106,
       longitude: -60.126648,
+      isTopOffer: false,
       price: 2500,
       imageUrl: '/',
       dateRange: 'MAY 28 - JUN 5',
@@ -2655,12 +2749,147 @@ export const locations: Record<string, Record<string, {
     },
   },
   'North America': {
-    'California': {
+    'Hawaii': {
       id: 1,
+      country: 'USA',
+      city: 'Honolulu',
+      price: 2500,
+      latitude: 19.741755,
+      longitude: -155.844437,
+      isTopOffer: true,
+      imageUrl: '///',
+      dateRange: 'AUG 5 - 12',
+      days: 7,
+      description: 'From the bustling streets of Honolulu to the lush landscapes of Maui, the rugged beauty of Kauai, and the volcanic wonders of the Big Island, immerse yourself in the diverse culture and natural splendor of Hawaii.',
+      tripRoute: 'Belgrade → Honolulu → Maui → Kauai → Big Island (Hawaii) → Belgrade',
+      travelPlan: [
+        {
+          'day': '1-2',
+          'description': 'Arrive in Honolulu. Check into the hotel and rest. Enjoy a guided tour of Honolulu, including Waikiki Beach and Pearl Harbor.'
+        },
+        {
+          'day': '3',
+          'description': 'Travel to Maui. Explore the scenic Road to Hana and visit Haleakalā National Park.'
+        },
+        {
+          'day': '4',
+          'description': 'Discover the beauty of Kauai with visits to Waimea Canyon and the Na Pali Coast.'
+        },
+        {
+          'day': '5',
+          'description': 'Experience the Big Island (Hawaii) with a tour of Volcanoes National Park and Punaluʻu Black Sand Beach.'
+        },
+        {
+          'day': '7',
+          'description': 'Return to Belgrade.'
+        },
+      ],
+      includedIn: `Accommodation in 4-star hotels
+      Transportation between islands (flights or ferries)
+      Guided tours on each island
+      Entrance fees to attractions mentioned in the itinerary
+      Daily breakfast
+      Assistance of a tour guide throughout the trip`
+    },
+    'Grand Canyon': {
+      id: 2,
+      country: 'USA',
+      city: 'Grand Canyon',
+      price: 1800,
+      imageUrl: '///',
+      latitude: 36.056595,
+      longitude: -112.125092,
+      isTopOffer: true,
+      dateRange: 'SEP 5 - 15',
+      days: 10,
+      description: 'Experience the awe-inspiring beauty of the Grand Canyon as you hike along its majestic rim, marvel at its vastness from scenic viewpoints, and learn about its geological history. Immerse yourself in the breathtaking landscapes and diverse wildlife of this iconic American landmark.',
+      tripRoute: 'Belgrade → Grand Canyon → Sedona → Monument Valley → Las Vegas → Belgrade',
+      travelPlan: [
+        {
+          'day': '1-2',
+          'description': 'Arrive at the Grand Canyon. Check into the hotel and rest. Explore the South Rim and visit popular viewpoints such as Mather Point and Yavapai Observation Station.'
+        },
+        {
+          'day': '3',
+          'description': 'Venture into the Grand Canyon for a guided hiking tour along the Bright Angel Trail or South Kaibab Trail.'
+        },
+        {
+          'day': '4',
+          'description': 'Travel to Sedona. Discover the vibrant red rock formations and mystical energy of this picturesque desert town.'
+        },
+        {
+          'day': '5',
+          'description': 'Embark on a scenic drive through Monument Valley, known for its towering sandstone buttes and dramatic landscapes.'
+        },
+        {
+          'day': '6-9',
+          'description': 'Explore the dazzling lights and entertainment of Las Vegas at your leisure.'
+        },
+        {
+          'day': '10',
+          'description': 'Return to Belgrade.'
+        }
+      ],
+      includedIn: `Accommodation in comfortable lodges
+      Transportation between destinations (bus or private vehicle)
+      Guided tours in the Grand Canyon and Sedona
+      Entrance fees to national parks and attractions mentioned in the itinerary
+      Daily breakfast
+      Assistance of a tour guide throughout the trip`
+    },
+    'Texas': {
+      id: 3,
+      country: 'USA',
+      city: 'Austin',
+      price: 2200,
+      imageUrl: '///',
+      latitude: 31.000000,
+      longitude: -100.000000,
+      isTopOffer: true,
+      dateRange: 'SEP 15 - 25',
+      days: 10,
+      description: 'Experience the Lone Star State\'s unique blend of cowboy culture, vibrant cities, and stunning natural landscapes. From the live music capital of Austin to the historic streets of San Antonio and the rugged beauty of Big Bend National Park, explore the best of Texas.',
+      tripRoute: 'Belgrade → Austin → San Antonio → Big Bend National Park → Dallas → Belgrade',
+      travelPlan: [
+        {
+          'day': '1',
+          'description': 'Arrive in Austin, the capital of Texas. Check into the hotel and rest. Explore the city\'s vibrant music scene, eclectic food scene, and outdoor attractions like Barton Springs Pool and Lady Bird Lake.'
+        },
+        {
+          'day': '2',
+          'description': 'Visit San Antonio and explore its historic sites, including the Alamo, River Walk, and Mission San José.'
+        },
+        {
+          'day': '3-4',
+          'description': 'Travel to Big Bend National Park and immerse yourself in its rugged beauty, with opportunities for hiking, birdwatching, and stargazing.'
+        },
+        {
+          'day': '5',
+          'description': 'Explore the cultural and culinary scene of Dallas, visiting attractions like the Sixth Floor Museum and Dallas Arboretum.'
+        },
+        {
+          'day': '6-9',
+          'description': 'Free days to explore Texas at your leisure, with optional activities such as ranch visits, wine tastings, or a visit to the Space Center Houston.'
+        },
+        {
+          'day': '10',
+          'description': 'Return to Belgrade.'
+        }
+      ],
+      includedIn: `Accommodation in centrally located hotels
+      Transportation between destinations (private vehicle or domestic flights)
+      Guided tours to historical sites and natural attractions
+      Entrance fees to attractions mentioned in the itinerary
+      Daily breakfast
+      Assistance of a tour guide throughout the trip`
+    },
+    'California': {
+      id: 4,
       country: 'United States',
       city: 'California',
       latitude: 36.7783,
       longitude: -119.4179,
+      isTopOffer: false,
       price: 4000,
       imageUrl: '/',
       dateRange: 'NOV 13 - NOV 27',
@@ -2710,11 +2939,12 @@ export const locations: Record<string, Record<string, {
       All taxes and service charges`
     },
     'New York': {
-      id: 2,
+      id: 5,
       country: 'United States',
       city: 'New York',
       latitude: 40.7128,
       longitude: -74.0060,
+      isTopOffer: false,
       price: 4500,
       imageUrl: '/',
       dateRange: 'OCT 5 - OCT 15',
@@ -2760,11 +2990,12 @@ export const locations: Record<string, Record<string, {
       All taxes and service charges`
     },
     'Canada': {
-      id: 3,
+      id: 6,
       country: 'Canada',
       city: 'Toronto',
       latitude: 43.651070,
       longitude: -79.347015,
+      isTopOffer: false,
       price: 3800,
       imageUrl: '/',
       dateRange: 'OCT 10 - OCT 22',
@@ -2811,11 +3042,12 @@ export const locations: Record<string, Record<string, {
       All taxes and service charges`
     },
     'Florida': {
-      id: 4,
+      id: 7,
       country: 'United States',
       city: 'Florida',
       latitude: 27.9944,
       longitude: -81.7603,
+      isTopOffer: false,
       price: 2000,
       imageUrl: '/',
       dateRange: 'SEP 21 - SEP 28',
@@ -2853,11 +3085,12 @@ export const locations: Record<string, Record<string, {
       All taxes and service charges`
     },
     'Jamaica': {
-      id: 5,
+      id: 8,
       country: 'Jamaica',
       city: 'Kingston',
       latitude: 18.1096,
       longitude: -77.2975,
+      isTopOffer: false,
       price: 3000,
       imageUrl: '/',
       dateRange: 'MAR 6 - MAR 14',
@@ -2895,11 +3128,12 @@ export const locations: Record<string, Record<string, {
       All taxes and service charges`
     },
     'Cuba': {
-      id: 6,
+      id: 9,
       country: 'Cuba',
       city: 'Havana',
       latitude: 23.1136,
       longitude: -82.3666,
+      isTopOffer: false,
       price: 3200,
       imageUrl: '/',
       dateRange: 'OCT 21 - OCT 31',
@@ -2941,11 +3175,12 @@ export const locations: Record<string, Record<string, {
       All taxes and service charges`
     },
     'Mexico': {
-      id: 7,
+      id: 10,
       country: 'Mexico',
       city: 'Mexico City',
       latitude: 23.6345,
       longitude: -102.5528,
+      isTopOffer: false,
       price: 3500,
       imageUrl: '/',
       dateRange: 'AUG 10 - AUG 20',
@@ -2988,11 +3223,12 @@ export const locations: Record<string, Record<string, {
       All taxes and service charges`
     },
     'Washington': {
-      id: 8,
+      id: 11,
       country: 'United States',
       city: 'Washington DC',
       latitude: 38.889805,
       longitude: -77.009056,
+      isTopOffer: false,
       price: 3800,
       imageUrl: '/',
       dateRange: 'DEC 2 - DEC 12',
@@ -3033,6 +3269,52 @@ export const locations: Record<string, Record<string, {
       Transportation between cities
       English-speaking guide
       All taxes and service charges`
-    }
+    },
+    'Costa Rica': {
+      id: 12,
+      country: 'Costa Rica',
+      city: 'San José',
+      price: 2500,
+      latitude: 9.934739,
+      longitude: -84.087502,
+      isTopOffer: true,
+      imageUrl: '///',
+      dateRange: 'OCT 5 - 15',
+      days: 10,
+      description: 'Immerse yourself in the lush rainforests, pristine beaches, and diverse wildlife of Costa Rica as you explore its national parks, volcanic landscapes, and ecological reserves. From the towering Arenal Volcano to the remote Osa Peninsula, discover the unparalleled beauty and biodiversity of this Central American gem.',
+      tripRoute: 'Belgrade → San José → Arenal Volcano → Monteverde Cloud Forest → Manuel Antonio National Park → Belgrade',
+      travelPlan: [
+        {
+          'day': '1',
+          'description': 'Arrive in San José. Check into the hotel and rest. Explore the vibrant capital city and visit attractions like the National Museum and Central Market.'
+        },
+        {
+          'day': '2-3',
+          'description': 'Journey to the Arenal Volcano region and enjoy outdoor activities such as hiking, hot springs, and zip-lining amidst the lush rainforest.'
+        },
+        {
+          'day': '4',
+          'description': 'Explore the mystical cloud forests of Monteverde and encounter rare wildlife, including the resplendent quetzal and howler monkeys.'
+        },
+        {
+          'day': '5',
+          'description': 'Relax on the pristine beaches of Manuel Antonio National Park, known for its abundant wildlife and stunning coastal landscapes.'
+        },
+        {
+          'day': '6-9',
+          'description': 'Free days to explore Costa Rica\'s natural wonders, with optional activities such as wildlife tours, snorkeling, or visiting indigenous communities.'
+        },
+        {
+          'day': '10',
+          'description': 'Return to Belgrade.'
+        }
+      ],
+      includedIn: `Accommodation in eco-friendly lodges
+      Transportation between destinations (private transfers or domestic flights)
+      Guided tours to national parks and ecological reserves
+      Entrance fees to attractions mentioned in the itinerary
+      Daily breakfast
+      Assistance of a tour guide throughout the trip`
+    },
   }
 };

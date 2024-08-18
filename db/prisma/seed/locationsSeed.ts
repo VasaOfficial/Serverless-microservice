@@ -93,6 +93,7 @@ async function seedData() {
                 city: destinationDetails.city,
                 latitude: destinationDetails.latitude,
                 longitude: destinationDetails.longitude,
+                isTopOffer: destinationDetails.isTopOffer,
                 price: destinationDetails.price,
                 imageUrl: destinationDetails.imageUrl,
                 dateRange: destinationDetails.dateRange,

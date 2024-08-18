@@ -73,7 +73,7 @@ export class CartRepository {
     try {
       // Check if the user exists
       const user = await prisma.user.findUnique({
-        where: { firebaseUid },
+        where: { firebaseUid: firebaseUid },
         include: {
           CartItem: {
             include: {
@@ -85,6 +85,11 @@ export class CartRepository {
 
       if (!user) {
         throw new Error('User does not exist')
+      }
+
+      // Check if the cart is empty
+      if (user.CartItem.length === 0) {
+        return { message: 'Cart is empty' };
       }
 
       // Return cart items directly
