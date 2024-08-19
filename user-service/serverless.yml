@@ -52,6 +52,7 @@ functions:
   #         method: post
 
   # Favorites Section
+
   addFavorites:
     handler: app/handler.AddFavorites
     timeout: 30
@@ -66,7 +67,7 @@ functions:
     events:
       - httpApi:
           path: /user/favorites
-          method: get
+          method: post
 
   deleteFavorites:
     handler: app/handler.DeleteFavorites
@@ -84,7 +85,7 @@ functions:
   #   events:
   #     - httpApi:
   #         path: /user/cart
-  #         method: get
+  #         method: post
 
   # addToCart:
   #   handler: app/handler.AddCartItem

@@ -26,6 +26,14 @@ export class AuthService {
       const error = await AppValidationError(input)
       if (error) return ErrorResponse(404, error)
 
+      // Check if the user already exists
+      const existingUser = await this.repository.findUserByUid({
+        firebaseUid: input.firebaseUid,
+      })
+      if (existingUser) {
+        return ErrorResponse(400, 'User already exists.')
+      }
+
       const data = await this.repository.createAccount({
         email: input.email,
         firebaseUid: input.firebaseUid,

@@ -1,4 +1,4 @@
 export interface UserModel {
-  email: string
+  email?: string
   firebaseUid: string
 }

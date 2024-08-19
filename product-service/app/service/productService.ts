@@ -4,6 +4,7 @@ import { ErrorResponse, SuccessResponse } from 'app/util/response'
 import { plainToClass } from 'class-transformer'
 import { AppValidationError } from 'app/util/errors'
 import { parse, isWithinInterval } from 'date-fns'
+import { autoInjectable } from 'tsyringe'
 import { GetProductInput, SearchProductsInput } from 'app/models/dto/ProductInput'
 
 function parseDateRange(dateRange: string) {
@@ -14,6 +15,7 @@ function parseDateRange(dateRange: string) {
   }
 }
 
+@autoInjectable()
 export class ProductService {
   _repository: ProductRepository
   constructor(repository: ProductRepository) {
