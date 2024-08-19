@@ -12,36 +12,35 @@ export class FavoritesRepository {
         include: {
           Favorite: true,
         },
-      });
+      })
 
       if (!user) {
-        throw new Error('User does not exist');
+        throw new Error('User does not exist')
       }
 
-
       if (user.Favorite.length >= 15) {
-        throw new Error('You can only add up to 15 items to your favorites');
+        throw new Error('You can only add up to 15 items to your favorites')
       }
 
       // Check if destination exists
       const destinationExists = await prisma.destination.findUnique({
         where: { id: destinationId },
-      });
+      })
 
       if (!destinationExists) {
-        throw new Error('Invalid destination ID');
+        throw new Error('Invalid destination ID')
       }
 
       // Check if favorite already exists
       const existingFavorite = await prisma.favorite.findFirst({
         where: {
-            userId: firebaseUid,
-            destinationId: destinationId,
+          userId: firebaseUid,
+          destinationId: destinationId,
         },
-      });
+      })
 
       if (existingFavorite) {
-        throw new Error('Favorite already exists');
+        throw new Error('Favorite already exists')
       }
 
       // Create new favorite
@@ -53,13 +52,13 @@ export class FavoritesRepository {
         include: {
           destination: true,
         },
-      });
+      })
 
-      return favorite;
+      return favorite
     } catch (error) {
-      throw new Error(`Failed to add favorite: ${error.message}`);
+      throw new Error(`Failed to add favorite: ${error.message}`)
     } finally {
-      await prisma.$disconnect();
+      await prisma.$disconnect()
     }
   }
 
@@ -74,11 +73,11 @@ export class FavoritesRepository {
             },
           },
         },
-      });
+      })
 
-      return user?.Favorite.map((favorite) => favorite.destination) || [];
+      return user?.Favorite.map((favorite) => favorite.destination) || []
     } catch (error) {
-      throw new Error(`Failed to retrieve favorites: ${error.message}`);
+      throw new Error(`Failed to retrieve favorites: ${error.message}`)
     } finally {
       await prisma.$disconnect()
     }
@@ -89,13 +88,13 @@ export class FavoritesRepository {
       // Check if the favorite exists
       const existingFavorite = await prisma.favorite.findFirst({
         where: {
-            userId: firebaseUid,
-            destinationId: destinationId,
+          userId: firebaseUid,
+          destinationId: destinationId,
         },
-      });
+      })
 
       if (!existingFavorite) {
-        throw new Error('Favorite does not exist');
+        throw new Error('Favorite does not exist')
       }
 
       // Delete the favorite
@@ -103,13 +102,13 @@ export class FavoritesRepository {
         where: {
           id: existingFavorite.id,
         },
-      });
+      })
 
-      return { message: 'Favorite removed successfully' };
+      return { message: 'Favorite removed successfully' }
     } catch (error) {
-      throw new Error(`Failed to remove favorite: ${error.message}`);
+      throw new Error(`Failed to remove favorite: ${error.message}`)
     } finally {
-      await prisma.$disconnect();
+      await prisma.$disconnect()
     }
   }
 }

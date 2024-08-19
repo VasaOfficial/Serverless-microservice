@@ -4,7 +4,6 @@ import { FavoritesService } from 'app/services/favoritesService'
 
 const service = new FavoritesService(new FavoritesRepository())
 
-
 export const AddFavorites = async (event: APIGatewayProxyEventV2) => {
   return service.AddFavorites(event)
 }

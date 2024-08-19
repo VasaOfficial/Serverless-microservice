@@ -3,7 +3,7 @@ import { autoInjectable } from 'tsyringe'
 import { plainToClass } from 'class-transformer'
 import { ErrorResponse, SuccessResponse } from 'app/util/response'
 import { AuthRepository } from 'app/repository/authRepository'
-import { SignupInput } from 'app/models/dto/LoginInput'
+import { SignupInput, TokenVerificationInput } from 'app/models/dto/AuthInput'
 import { AppValidationError } from 'app/util/errors'
 import auth from 'app/config/firebase'
 
@@ -26,7 +26,6 @@ export class AuthService {
       const error = await AppValidationError(input)
       if (error) return ErrorResponse(404, error)
 
-      // Save user data to your database using UserRepository
       const data = await this.repository.createAccount({
         email: input.email,
         firebaseUid: input.firebaseUid,
@@ -52,7 +51,11 @@ export class AuthService {
 
   async TokenVerification(event: APIGatewayProxyEventV2) {
     try {
-      const authHeader = event.headers.authorization
+      const parsedBody = plainToClass(TokenVerificationInput, event.headers)
+      const error = await AppValidationError(parsedBody)
+      if (error) return ErrorResponse(400, error)
+
+      const authHeader = parsedBody.authorization
       if (!authHeader) {
         return ErrorResponse(401, 'Unauthorized')
       }
@@ -96,7 +99,11 @@ export class AuthService {
 
   async OAuthentication(event: APIGatewayProxyEventV2) {
     try {
-      const authHeader = event.headers.authorization
+      const parsedBody = plainToClass(TokenVerificationInput, event.headers)
+      const error = await AppValidationError(parsedBody)
+      if (error) return ErrorResponse(400, error)
+
+      const authHeader = parsedBody.authorization
       if (!authHeader) {
         return ErrorResponse(401, 'Unauthorized')
       }

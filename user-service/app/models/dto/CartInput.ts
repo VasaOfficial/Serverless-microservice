@@ -1,14 +1,45 @@
-import { IsNumber, Length } from 'class-validator'
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator'
 
-export class CartInput {
+export class AddCartItemInput {
+  @IsString()
+  @IsNotEmpty()
+  firebaseUid!: string
+
   @IsNumber()
-  qty: number
+  @IsNotEmpty()
+  destinationId!: number
 
-  @Length(6, 24)
-  productId: string
+  @IsNumber()
+  @IsNotEmpty()
+  quantity!: number
 }
 
-export class UpdateCartInput {
+export class GetCartItemInput {
+  @IsString()
+  @IsNotEmpty()
+  firebaseUid!: string
+}
+
+export class UpdateCartItemInput {
+  @IsString()
+  @IsNotEmpty()
+  firebaseUid!: string
+
   @IsNumber()
-  qty: number
+  @IsNotEmpty()
+  destinationId!: number
+
+  @IsNumber()
+  @IsNotEmpty()
+  quantity!: number
+}
+
+export class RemoveCartItemInput {
+  @IsString()
+  @IsNotEmpty()
+  firebaseUid!: string
+
+  @IsNumber()
+  @IsNotEmpty()
+  destinationId!: number
 }

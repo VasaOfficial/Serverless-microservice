@@ -1,9 +1,10 @@
-import { APIGatewayEvent, APIGatewayProxyEventV2 } from 'aws-lambda'
+import { APIGatewayProxyEventV2 } from 'aws-lambda'
 import { ProductRepository } from 'app/repository/productRepository'
-import { ErrorResponse, SuccessResponse } from '../util/response'
-// import { plainToClass } from 'class-transformer'
-// import { AppValidationError } from '../util/errors'
+import { ErrorResponse, SuccessResponse } from 'app/util/response'
+import { plainToClass } from 'class-transformer'
+import { AppValidationError } from 'app/util/errors'
 import { parse, isWithinInterval } from 'date-fns'
+import { GetProductInput, SearchProductsInput } from 'app/models/dto/ProductInput'
 
 function parseDateRange(dateRange: string) {
   const [start, end] = dateRange.split(' - ')
@@ -19,66 +20,86 @@ export class ProductService {
     this._repository = repository
   }
 
-  async ResponseWithError(error: APIGatewayEvent) {
+  async ResponseWithError() {
     return ErrorResponse(404, new Error('method not allowed'))
   }
 
   async GetProducts(event: APIGatewayProxyEventV2) {
-    const data = await this._repository.getAllProducts()
-    return SuccessResponse(data)
+    try {
+      const data = await this._repository.getAllProducts()
+      return SuccessResponse(data)
+    } catch (error) {
+      return ErrorResponse(500, error.message)
+    }
   }
 
   async GetProduct(event: APIGatewayProxyEventV2) {
-    const productId = event.pathParameters?.id
-    if (!productId) return ErrorResponse(404, 'product id not found!')
+    try {
+      const parsedParams = plainToClass(GetProductInput, event.pathParameters || {})
+      const error = await AppValidationError(parsedParams)
+      if (error) return ErrorResponse(400, error)
 
-    const data = await this._repository.getProductById(parseInt(productId))
+      const { productId } = parsedParams
 
-    if (data === null) return ErrorResponse(404, 'Product not found')
-    return SuccessResponse(data)
+      if (!productId) return ErrorResponse(404, 'product id not found!')
+
+      const data = await this._repository.getProductById(parseInt(productId))
+
+      return SuccessResponse(data)
+    } catch (error) {
+      return ErrorResponse(500, error.message)
+    }
   }
 
   async GetTopOffers(event: APIGatewayProxyEventV2) {
-    const data = await this._repository.getTopOffers()
-    return SuccessResponse(data)
+    try {
+      const data = await this._repository.getTopOffers()
+      return SuccessResponse(data)
+    } catch (error) {
+      return ErrorResponse(500, error.message)
+    }
   }
 
   async SearchProducts(event: APIGatewayProxyEventV2) {
-    const { continents, date, price } = event.queryStringParameters || {}
-
-    const filters: any = {}
-
-    if (continents) {
-      // Assuming continents is a comma-separated list
-      const continentNames = continents.split(',')
-
-      filters.country = {
-        continent: {
-          name: {
-            in: continentNames,
-          },
-        },
-      }
-    }
-
-    // Price filter
-    if (price) {
-      filters.price = {
-        lte: parseInt(price, 10),
-      }
-    }
-
-    // Handle date filter
-    let startDate: Date | null = null
-    let endDate: Date | null = null
-
-    if (date) {
-      const [startDateStr, endDateStr] = date.split(':')
-      startDate = new Date(startDateStr)
-      endDate = new Date(endDateStr)
-    }
-
     try {
+      const parsedQuery = plainToClass(SearchProductsInput, event.queryStringParameters || {})
+      const error = await AppValidationError(parsedQuery)
+      if (error) return ErrorResponse(400, error)
+
+      const { continents, date, price } = parsedQuery
+
+      const filters: any = {}
+
+      if (continents) {
+        // Assuming continents is a comma-separated list
+        const continentNames = continents.split(',')
+
+        filters.country = {
+          continent: {
+            name: {
+              in: continentNames,
+            },
+          },
+        }
+      }
+
+      // Price filter
+      if (price) {
+        filters.price = {
+          lte: price,
+        }
+      }
+
+      // Handle date filter
+      let startDate: Date | null = null
+      let endDate: Date | null = null
+
+      if (date) {
+        const [startDateStr, endDateStr] = date.split(':')
+        startDate = new Date(startDateStr)
+        endDate = new Date(endDateStr)
+      }
+
       const data = await this._repository.searchProducts(filters)
 
       // If date range is provided filter the results in-memory
@@ -100,7 +121,7 @@ export class ProductService {
       if (data.length === 0) return ErrorResponse(404, 'No products found')
       return SuccessResponse(data)
     } catch (error) {
-      return ErrorResponse(500, 'Internal Server Error')
+      return ErrorResponse(500, error.message)
     }
   }
 }

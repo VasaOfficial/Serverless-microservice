@@ -2,6 +2,14 @@ import { APIGatewayProxyEventV2 } from 'aws-lambda'
 import { autoInjectable } from 'tsyringe'
 import { ErrorResponse, SuccessResponse } from 'app/util/response'
 import { CartRepository } from 'app/repository/cartRepository'
+import { plainToClass } from 'class-transformer'
+import { AppValidationError } from 'app/util/errors'
+import {
+  AddCartItemInput,
+  GetCartItemInput,
+  UpdateCartItemInput,
+  RemoveCartItemInput,
+} from 'app/models/dto/CartInput'
 
 @autoInjectable()
 export class CartService {
@@ -17,7 +25,11 @@ export class CartService {
 
   async AddCartItem(event: APIGatewayProxyEventV2) {
     try {
-      const { firebaseUid, destinationId, quantity } = JSON.parse(event.body || '{}')
+      const parsedBody = plainToClass(AddCartItemInput, JSON.parse(event.body || '{}'))
+      const error = await AppValidationError(parsedBody)
+      if (error) return ErrorResponse(400, error)
+
+      const { firebaseUid, destinationId, quantity } = parsedBody
 
       if (!firebaseUid || !destinationId || !quantity) {
         return ErrorResponse(400, 'firebaseUid, destinationId, and quantity are required')
@@ -33,13 +45,17 @@ export class CartService {
 
   async GetCartItem(event: APIGatewayProxyEventV2) {
     try {
-      const { firebaseUid } = JSON.parse(event.body || '{}')
+      const parsedBody = plainToClass(GetCartItemInput, JSON.parse(event.body || '{}'))
+      const error = await AppValidationError(parsedBody)
+      if (error) return ErrorResponse(400, error)
+
+      const { firebaseUid } = parsedBody
 
       if (!firebaseUid) {
         return ErrorResponse(400, 'firebaseUid is required')
       }
 
-      const cartItems = await this.repository.getCartItems(firebaseUid)
+      const cartItems = await this.repository.getCartItems({ firebaseUid })
 
       return SuccessResponse(cartItems)
     } catch (error) {
@@ -49,7 +65,11 @@ export class CartService {
 
   async UpdateCartItem(event: APIGatewayProxyEventV2) {
     try {
-      const { firebaseUid, destinationId, quantity } = JSON.parse(event.body || '{}')
+      const parsedBody = plainToClass(UpdateCartItemInput, JSON.parse(event.body || '{}'))
+      const error = await AppValidationError(parsedBody)
+      if (error) return ErrorResponse(400, error)
+
+      const { firebaseUid, destinationId, quantity } = parsedBody
 
       if (!firebaseUid || !destinationId || !quantity) {
         return ErrorResponse(400, 'firebaseUid, destinationId, and quantity are required')
@@ -65,7 +85,11 @@ export class CartService {
 
   async RemoveCartItem(event: APIGatewayProxyEventV2) {
     try {
-      const { firebaseUid, destinationId } = JSON.parse(event.body || '{}')
+      const parsedBody = plainToClass(RemoveCartItemInput, JSON.parse(event.body || '{}'))
+      const error = await AppValidationError(parsedBody)
+      if (error) return ErrorResponse(400, error)
+
+      const { firebaseUid, destinationId } = parsedBody
 
       if (!firebaseUid || !destinationId) {
         return ErrorResponse(400, 'firebaseUid and destinationId are required')

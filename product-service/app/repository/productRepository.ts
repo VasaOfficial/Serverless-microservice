@@ -8,7 +8,7 @@ export class ProductRepository {
     return await prisma.destination.findMany()
   }
 
-  async getProductById(productId: number ) {
+  async getProductById(productId: number) {
     return await prisma.destination.findUnique({
       where: {
         id: productId,
@@ -19,9 +19,9 @@ export class ProductRepository {
   async getTopOffers() {
     return await prisma.destination.findMany({
       where: {
-          isTopOffer: true
-      }
-  });
+        isTopOffer: true,
+      },
+    })
   }
 
   async searchProducts(filters: any) {

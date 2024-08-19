@@ -89,7 +89,7 @@ export class CartRepository {
 
       // Check if the cart is empty
       if (user.CartItem.length === 0) {
-        return { message: 'Cart is empty' };
+        return { message: 'Cart is empty' }
       }
 
       // Return cart items directly

@@ -1,4 +1,4 @@
 export interface FavoriteModel {
-  firebaseUid: string
-  destinationId: number
+  firebaseUid?: string
+  destinationId?: number
 }
