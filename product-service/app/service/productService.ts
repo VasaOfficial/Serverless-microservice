@@ -41,11 +41,11 @@ export class ProductService {
       const error = await AppValidationError(parsedParams)
       if (error) return ErrorResponse(400, error)
 
-      const { productId } = parsedParams
+      const { id } = parsedParams
 
-      if (!productId) return ErrorResponse(404, 'product id not found!')
+      if (!id) return ErrorResponse(404, 'product id not found!')
 
-      const data = await this._repository.getProductById(parseInt(productId))
+      const data = await this._repository.getProductById(parseInt(id))
 
       return SuccessResponse(data)
     } catch (error) {

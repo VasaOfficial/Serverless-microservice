@@ -1,4 +1,4 @@
-import { IsEmail, Length, IsString, IsNotEmpty } from 'class-validator'
+import { IsEmail, Length, IsString } from 'class-validator'
 
 export class SignupInput {
   @IsEmail()
@@ -12,10 +12,4 @@ export class SignupInput {
 export class PasswordResetInput {
   @IsEmail()
   email: string
-}
-
-export class TokenVerificationInput {
-  @IsString()
-  @IsNotEmpty()
-  authorization!: string
 }

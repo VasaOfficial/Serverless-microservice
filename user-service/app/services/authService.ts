@@ -3,7 +3,7 @@ import { autoInjectable } from 'tsyringe'
 import { plainToClass } from 'class-transformer'
 import { ErrorResponse, SuccessResponse } from 'app/util/response'
 import { AuthRepository } from 'app/repository/authRepository'
-import { SignupInput, TokenVerificationInput } from 'app/models/dto/AuthInput'
+import { SignupInput } from 'app/models/dto/AuthInput'
 import { AppValidationError } from 'app/util/errors'
 import auth from 'app/config/firebase'
 
@@ -59,27 +59,26 @@ export class AuthService {
 
   async TokenVerification(event: APIGatewayProxyEventV2) {
     try {
-      const parsedBody = plainToClass(TokenVerificationInput, event.headers)
-      const error = await AppValidationError(parsedBody)
-      if (error) return ErrorResponse(400, error)
-
-      const authHeader = parsedBody.authorization
+      // Extract token from Authorization header
+      const authHeader = event.headers['Authorization'] || event.headers['authorization']
       if (!authHeader) {
-        return ErrorResponse(401, 'Unauthorized')
+        return ErrorResponse(401, 'Authorization header is missing')
       }
 
-      // Extract the token from the Authorization header
+      // Extract token from Authorization header
       const token = authHeader.split(' ')[1]
       if (!token) {
-        return ErrorResponse(401, 'Unauthorized')
+        return ErrorResponse(401, 'Token is missing')
       }
 
       // Verify Firebase token
       const decodedToken = await auth.verifyIdToken(token)
-      const { firebaseUid } = decodedToken
+
+      // Extract uid from the decoded token
+      const { uid: firebaseUid } = decodedToken
 
       // Retrieve user data from the database
-      const user = await this.repository.findUserByUid(firebaseUid)
+      const user = await this.repository.findUserByUid({ firebaseUid })
       if (!user) {
         return ErrorResponse(404, 'User not found')
       }
@@ -107,33 +106,48 @@ export class AuthService {
 
   async OAuthentication(event: APIGatewayProxyEventV2) {
     try {
-      const parsedBody = plainToClass(TokenVerificationInput, event.headers)
-      const error = await AppValidationError(parsedBody)
-      if (error) return ErrorResponse(400, error)
-
-      const authHeader = parsedBody.authorization
+      // Extract token from Authorization header
+      const authHeader = event.headers['Authorization'] || event.headers['authorization']
       if (!authHeader) {
-        return ErrorResponse(401, 'Unauthorized')
+        return ErrorResponse(401, 'Authorization header is missing')
       }
 
-      // Extract the token from the Authorization header
       const token = authHeader.split(' ')[1]
       if (!token) {
-        return ErrorResponse(401, 'Unauthorized')
+        return ErrorResponse(401, 'Token is missing')
       }
 
       // Verify Firebase token
       const decodedToken = await auth.verifyIdToken(token)
-      const { firebaseUid } = decodedToken
+
+      if (!decodedToken || !decodedToken.uid) {
+        return ErrorResponse(401, 'Invalid token')
+      }
+
+      // Extract uid from the decoded token
+      const { uid: firebaseUid, email } = decodedToken
+
+      if (!email) {
+        return ErrorResponse(400, 'Email not provided')
+      }
 
       // Check if the user exists in the database
-      const user = await this.repository.findUserByUid(firebaseUid)
+      const user = await this.repository.findUserByUid({ firebaseUid })
 
       if (user) {
         // User exists, validate the token
         return await this.TokenVerification(event)
       } else {
-        return await this.CreateUser(event)
+        // Create a new user with the extracted email and firebaseUid
+        const newUser = await this.repository.createAccount({
+          email,
+          firebaseUid,
+        })
+
+        return SuccessResponse({
+          message: 'User created successfully.',
+          userData: newUser,
+        })
       }
     } catch (error) {
       if (error.code === 'auth/argument-error') {

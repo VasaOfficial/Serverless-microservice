@@ -3,7 +3,7 @@ import { IsString, IsNotEmpty, IsNumber, IsOptional } from 'class-validator'
 export class GetProductInput {
   @IsString()
   @IsNotEmpty()
-  productId!: string
+  id!: string
 }
 
 export class SearchProductsInput {

@@ -11,29 +11,15 @@ provider:
   runtime: nodejs20.x
   region: eu-central-1
 
-# cors:
-#   origins:
-#     - http://localhost:3000
-#   headers:
-#     - 'Content-Type'
-#     - 'X-Custom-Header'
-#     - 'Access-Control-Allow-Origin'
-#     - 'Authorization'
-#   allowCredentials: true
-#   methods:
-#     - GET
-#     - POST
-#     - OPTIONS
-
 functions:
   #User Section
-  signup:
-    handler: app/handler.SignUp
-    timeout: 30
-    events:
-      - httpApi:
-          path: /user/signup
-          method: post
+  # signup:
+  #   handler: app/handler.SignUp
+  #   timeout: 30
+  #   events:
+  #     - httpApi:
+  #         path: /user/signup
+  #         method: post
 
   # validateToken:
   #   handler: app/handler.ValidateToken
@@ -53,63 +39,63 @@ functions:
 
   # Favorites Section
 
-  addFavorites:
-    handler: app/handler.AddFavorites
-    timeout: 30
-    events:
-      - httpApi:
-          path: /user/favorites
-          method: post
-
-  getFavorites:
-    handler: app/handler.GetFavorites
-    timeout: 30
-    events:
-      - httpApi:
-          path: /user/favorites
-          method: post
-
-  deleteFavorites:
-    handler: app/handler.DeleteFavorites
-    timeout: 30
-    events:
-      - httpApi:
-          path: /user/favorites
-          method: delete
-
-  # Cart Section
-
-  # getCart:
-  #   handler: app/handler.GetCartItem
+  # addFavorite:
+  #   handler: app/handler.AddFavorites
   #   timeout: 30
   #   events:
   #     - httpApi:
-  #         path: /user/cart
+  #         path: /user/favorite
   #         method: post
 
-  # addToCart:
-  #   handler: app/handler.AddCartItem
+  # getFavorites:
+  #   handler: app/handler.GetFavorites
   #   timeout: 30
   #   events:
   #     - httpApi:
-  #         path: /user/cart
+  #         path: /user/favorites
   #         method: post
 
-  # removeFromCart:
-  #   handler: app/handler.RemoveCartItem
+  # deleteFavorites:
+  #   handler: app/handler.DeleteFavorites
   #   timeout: 30
   #   events:
   #     - httpApi:
-  #         path: /user/cart
+  #         path: /user/favorites
   #         method: delete
 
-  # updateCart:
-  #   handler: app/handler.UpdateCartItem
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /user/cart
-  #         method: patch
+  # # Cart Section
+
+  getCart:
+    handler: app/handler.GetCartItem
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/cart/items
+          method: post
+
+  addToCart:
+    handler: app/handler.AddCartItem
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/cart
+          method: post
+
+  removeFromCart:
+    handler: app/handler.RemoveCartItem
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/cart
+          method: delete
+
+  updateCart:
+    handler: app/handler.UpdateCartItem
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/cart
+          method: patch
 
 build:
   esbuild:
