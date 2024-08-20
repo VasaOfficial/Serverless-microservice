@@ -18,8 +18,8 @@ terraform {
  required_version = "~> 1.9"
 
   backend "s3" {
-    bucket = "user-service-tf-backend"
-    key    = "user-service/terraform/terraform.tfstate"
+    bucket = "product-service-tf-backend"
+    key    = "product-service/terraform/terraform.tfstate"
     region = "eu-central-1"
   }
 }

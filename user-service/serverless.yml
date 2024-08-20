@@ -13,55 +13,55 @@ provider:
 
 functions:
   #User Section
-  # signup:
-  #   handler: app/handler.SignUp
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /user/signup
-  #         method: post
+  signup:
+    handler: app/handler.SignUp
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/signup
+          method: post
 
-  # validateToken:
-  #   handler: app/handler.ValidateToken
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /user/validate
-  #         method: post
+  validateToken:
+    handler: app/handler.ValidateToken
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/validate
+          method: post
 
-  # oAuth:
-  #   handler: app/handler.OAuthentication
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /user/oauth
-  #         method: post
+  oAuth:
+    handler: app/handler.OAuthentication
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/oauth
+          method: post
 
   # Favorites Section
 
-  # addFavorite:
-  #   handler: app/handler.AddFavorites
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /user/favorite
-  #         method: post
+  addFavorite:
+    handler: app/handler.AddFavorites
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/favorite
+          method: post
 
-  # getFavorites:
-  #   handler: app/handler.GetFavorites
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /user/favorites
-  #         method: post
+  getFavorites:
+    handler: app/handler.GetFavorites
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/favorites
+          method: post
 
-  # deleteFavorites:
-  #   handler: app/handler.DeleteFavorites
-  #   timeout: 30
-  #   events:
-  #     - httpApi:
-  #         path: /user/favorites
-  #         method: delete
+  deleteFavorites:
+    handler: app/handler.DeleteFavorites
+    timeout: 30
+    events:
+      - httpApi:
+          path: /user/favorites
+          method: delete
 
   # # Cart Section
 
