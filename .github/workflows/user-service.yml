@@ -43,7 +43,7 @@ jobs:
       - name: Run Lint
         run: npm run lint
 
-      - name: Compile TypeScript with esbuild
+      - name: Build code with esbuild
         run: npx esbuild src/index.ts --bundle --platform=node --outdir=dist
 
       - name: Zip Lambda build
